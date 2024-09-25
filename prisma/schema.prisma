@@ -11,6 +11,7 @@ model Users {
   id        String     @id @default(cuid())
   name      String     @db.VarChar(100)
   email     String     @unique @db.VarChar(100)
+  password  String     @db.VarChar(100)
   google_id String     @unique
   Income    Income[]
   Expenses  Expenses[]
