@@ -1,16 +1,18 @@
-import User from "@/components/user";
-import prisma from "@/lib/db";
+import Link from "next/link";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const Home = async () => {
-  const incomes = await prisma.incomeCategories.findMany();
-
   return (
-    <div>
-      {incomes.map((income) => {
-        return <div key={income.id}>{income.name}</div>;
-      })}
-      <User />
+    <div className="min-h-screen border border-red-400 flex flex-col justify-center items-center p-4">
+      <h1 className="font-bold text-4xl">Welcome to Mony.</h1>
+      <p>
+        Mony is a simple budgeting app that helps you track your expenses and
+        income. It&apos;s easy to use and free to use.
+      </p>
+      <Link href="/api/auth/signin">
+        <Button>Login</Button>
+      </Link>
     </div>
   );
 };
