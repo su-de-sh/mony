@@ -4,6 +4,8 @@ import React from "react";
 
 const User = () => {
   const { data: session } = useSession();
+  console.log("[user.tsx--[7]], session", session);
+
   return (
     <div>
       {session ? (

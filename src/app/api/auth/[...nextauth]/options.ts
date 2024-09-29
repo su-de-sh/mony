@@ -2,6 +2,8 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { SessionStrategy } from "next-auth";
 
 export const options = {
   providers: [
@@ -33,7 +35,7 @@ export const options = {
           throw new Error("Password is required");
         }
 
-        const user = await prisma.users.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
             email: credentials?.email,
           },
@@ -55,18 +57,9 @@ export const options = {
       },
     }),
   ],
-
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = user?.role;
-      return { ...user, ...token };
-    },
-    async session({ session, token }) {
-      session.user.role = token?.role;
-      return session;
-    },
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt" as SessionStrategy,
   },
 };
