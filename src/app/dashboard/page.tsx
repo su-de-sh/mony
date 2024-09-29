@@ -89,43 +89,7 @@ export default function Mony() {
   const amountInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setTransactions([
-      {
-        id: 1,
-        type: "income",
-        amount: 5000,
-        category: "Salary",
-        date: new Date(2024, 8, 1),
-      },
-      {
-        id: 2,
-        type: "expense",
-        amount: 100,
-        category: "Food",
-        date: new Date(2024, 8, 2),
-      },
-      {
-        id: 3,
-        type: "expense",
-        amount: 200,
-        category: "Transport",
-        date: new Date(2024, 8, 3),
-      },
-      {
-        id: 4,
-        type: "income",
-        amount: 1000,
-        category: "Investments",
-        date: new Date(2024, 8, 4),
-      },
-      {
-        id: 5,
-        type: "expense",
-        amount: 500,
-        category: "Shopping",
-        date: new Date(2024, 8, 5),
-      },
-    ]);
+    setTransactions([]);
   }, []);
 
   useEffect(() => {
