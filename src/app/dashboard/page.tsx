@@ -98,6 +98,23 @@ export default function Mony() {
     }
   }, [isAddingTransaction]);
 
+  useEffect(() => {
+    const storedTransactions = localStorage.getItem("transactions");
+    if (storedTransactions) {
+      setTransactions(JSON.parse(storedTransactions));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAddingTransaction && amountInputRef.current) {
+      amountInputRef.current.focus();
+    }
+  }, [isAddingTransaction]);
+
+  const saveTransactionsToLocalStorage = (transactions: Transaction[]) => {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  };
+
   const addTransaction = () => {
     if (amount && category) {
       const newTransaction: Transaction = {
@@ -107,20 +124,21 @@ export default function Mony() {
         category,
         date: new Date(),
       };
-      setTransactions((prevTransactions) => [
-        newTransaction,
-        ...prevTransactions,
-      ]);
+      const updatedTransactions = [newTransaction, ...transactions];
+      setTransactions(updatedTransactions);
+      saveTransactionsToLocalStorage(updatedTransactions);
       setIsAddingTransaction(false);
       setAmount("");
       setCategory("");
     }
   };
 
+  console.log("[page.tsx--[136]], transactions", transactions);
+
   const filteredTransactions = transactions.filter(
     (t) =>
-      t.date.getMonth() === currentMonth.getMonth() &&
-      t.date.getFullYear() === currentMonth.getFullYear()
+      new Date(t?.date)?.getMonth() === currentMonth?.getMonth() &&
+      new Date(t?.date)?.getFullYear() === currentMonth?.getFullYear()
   );
 
   const totalIncome = filteredTransactions
@@ -384,7 +402,7 @@ export default function Mony() {
                           darkMode ? "text-gray-400" : "text-gray-500"
                         }`}
                       >
-                        {transaction.date.toLocaleDateString()}
+                        {new Date(transaction.date).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
