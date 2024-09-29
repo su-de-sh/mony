@@ -133,8 +133,6 @@ export default function Mony() {
     }
   };
 
-  console.log("[page.tsx--[136]], transactions", transactions);
-
   const filteredTransactions = transactions.filter(
     (t) =>
       new Date(t?.date)?.getMonth() === currentMonth?.getMonth() &&
