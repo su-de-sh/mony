@@ -10,7 +10,7 @@ const Home = async () => {
         Mony is a simple budgeting app that helps you track your expenses and
         income. It&apos;s easy to use and free to use.
       </p>
-      <Link href="/api/auth/signin">
+      <Link href="/auth/signup">
         <Button>Get Started</Button>
       </Link>
     </div>

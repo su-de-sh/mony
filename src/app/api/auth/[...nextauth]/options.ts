@@ -62,4 +62,12 @@ export const options = {
   session: {
     strategy: "jwt" as SessionStrategy,
   },
+  callbacks: {
+    async redirect(url) {
+      return url.baseUrl + "/dashboard";
+    },
+  },
+  pages: {
+    signIn: "/auth/signin",
+  },
 };
