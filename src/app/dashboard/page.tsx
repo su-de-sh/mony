@@ -26,8 +26,10 @@ import {
   Moon,
   Sun,
   BarChart2,
+  LogOut,
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { signOut } from "next-auth/react";
 
 type Transaction = {
   id: number;
@@ -469,8 +471,9 @@ export default function Mony() {
                 ? "text-orange-400 hover:bg-gray-700"
                 : "text-orange-600 hover:bg-orange-100"
             } transition-colors`}
+            onClick={() => signOut()}
           >
-            <Menu className="w-6 h-6" />
+            <LogOut className="w-6 h-6" />
           </button>
         </div>
       </nav>
