@@ -63,6 +63,16 @@ export const options = {
     strategy: "jwt" as SessionStrategy,
   },
   callbacks: {
+    async session({ session, token, user }) {
+      // Attach the user's ID to the session object
+
+      if (user?.id) {
+        session.user.id = user.id;
+      } else if (token?.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
     async redirect(url) {
       return url.baseUrl + "/dashboard";
     },

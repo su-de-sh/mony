@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, color } from "framer-motion";
 import {
   Menu,
   Search,
@@ -27,9 +27,12 @@ import {
   Sun,
   BarChart2,
   LogOut,
+  Dog,
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { signOut } from "next-auth/react";
+import TransactionForm from "@/components/organism/transaction/TransactionForm";
+import prisma from "@/lib/db";
 
 type Transaction = {
   id: number;
@@ -40,20 +43,45 @@ type Transaction = {
 };
 
 const categories = [
-  { name: "Shopping", icon: ShoppingBag, color: "#FF9F43" },
   { name: "Salary", icon: Briefcase, color: "#54A0FF" },
   { name: "Investments", icon: PiggyBank, color: "#5CAB7D" },
+  {
+    name: "Business",
+    icon: Briefcase,
+    color: "#FF9F43",
+  },
+  { name: "Freelancing", icon: Briefcase, color: "#FF9F43" },
+  { name: "Rent", icon: Home, color: "#5ED4F3" },
+
+  { name: "Utilities", icon: Home, color: "#5ED4F3" },
+  { name: "Groceries", icon: ShoppingBag, color: "#FF9F43" },
   { name: "Food", icon: Utensils, color: "#FF6B6B" },
-  { name: "Housing", icon: Home, color: "#48DBB4" },
-  { name: "Transport", icon: Car, color: "#5ED4F3" },
+  { name: "Transportation", icon: Car, color: "#5ED4F3" },
   { name: "Entertainment", icon: Film, color: "#FF9FF3" },
-  { name: "Health", icon: Heart, color: "#FD7272" },
+  { name: "Healthcare", icon: Heart, color: "#FD7272" },
   { name: "Fitness", icon: Dumbbell, color: "#6C5CE7" },
   { name: "Travel", icon: Plane, color: "#1DD1A1" },
   { name: "Gifts", icon: Gift, color: "#FF6B6B" },
-  { name: "Technology", icon: Smartphone, color: "#54A0FF" },
-  { name: "Cafe", icon: Coffee, color: "#D6A2E8" },
+  { name: "Gadgets", icon: Smartphone, color: "#54A0FF" },
   { name: "Education", icon: Book, color: "#FF9FF3" },
+  { name: "Other", icon: Moon, color: "#FF9F43" },
+  { name: "Pet", icon: Dog, color: "#FD7272" },
+
+  {
+    name: "Clothing",
+    icon: ShoppingBag,
+    color: "#FF2F43",
+  },
+  {
+    name: "Rent",
+    icon: Home,
+    color: "#5ED4F3",
+  },
+  {
+    name: "Insurance",
+    icon: PiggyBank,
+    color: "#5CAB7D",
+  },
 ];
 
 const MonyLogo = () => (
@@ -78,11 +106,7 @@ const MonyLogo = () => (
 export default function Mony() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
-  const [transactionType, setTransactionType] = useState<"income" | "expense">(
-    "expense"
-  );
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [darkMode, setDarkMode] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
@@ -110,28 +134,6 @@ export default function Mony() {
       amountInputRef.current.focus();
     }
   }, [isAddingTransaction]);
-
-  const saveTransactionsToLocalStorage = (transactions: Transaction[]) => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  };
-
-  const addTransaction = () => {
-    if (amount && category) {
-      const newTransaction: Transaction = {
-        id: Date.now(),
-        type: transactionType,
-        amount: parseFloat(amount),
-        category,
-        date: new Date(),
-      };
-      const updatedTransactions = [newTransaction, ...transactions];
-      setTransactions(updatedTransactions);
-      saveTransactionsToLocalStorage(updatedTransactions);
-      setIsAddingTransaction(false);
-      setAmount("");
-      setCategory("");
-    }
-  };
 
   const filteredTransactions = transactions.filter(
     (t) =>
@@ -493,70 +495,8 @@ export default function Mony() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              <div className="flex justify-around mb-4">
-                <button
-                  className={`px-6 py-2 rounded-full transition-colors ${
-                    transactionType === "expense"
-                      ? "bg-red-500 text-white"
-                      : darkMode
-                      ? "bg-gray-700 text-gray-300"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => setTransactionType("expense")}
-                >
-                  Expense
-                </button>
-                <button
-                  className={`px-6 py-2 rounded-full transition-colors ${
-                    transactionType === "income"
-                      ? "bg-green-500 text-white"
-                      : darkMode
-                      ? "bg-gray-700 text-gray-300"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => setTransactionType("income")}
-                >
-                  Income
-                </button>
-              </div>
-              <input
-                ref={amountInputRef}
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Amount"
-                className={`w-full p-3 mb-4 rounded-xl ${
-                  darkMode
-                    ? "bg-gray-700 text-white placeholder-gray-400"
-                    : "bg-gray-100 text-gray-800 placeholder-gray-500"
-                } focus:outline-none focus:ring-2 focus:ring-orange-500`}
-              />
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className={`w-full p-3 mb-4 rounded-xl ${
-                  darkMode
-                    ? "bg-gray-700 text-white"
-                    : "bg-gray-100 text-gray-800"
-                } focus:outline-none focus:ring-2 focus:ring-orange-500`}
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat.name} value={cat.name}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-              <button
-                onClick={addTransaction}
-                className={`w-full p-3 rounded-xl text-white font-semibold ${
-                  darkMode
-                    ? "bg-orange-500 hover:bg-orange-600"
-                    : "bg-orange-500 hover:bg-orange-600"
-                } transition-colors`}
-              >
-                Add Transaction
-              </button>
+
+              <TransactionForm darkMode={darkMode} categories={categories} />
             </motion.div>
           </motion.div>
         )}
