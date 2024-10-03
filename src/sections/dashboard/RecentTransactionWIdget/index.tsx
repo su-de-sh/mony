@@ -3,10 +3,6 @@ import { motion } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 
 const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
-  console.log(
-    "[index.tsx--[6]], transactionForCUrrentMonth",
-    transactionForCurrentMonth
-  );
   if (!transactionForCurrentMonth || transactionForCurrentMonth?.length === 0) {
     return null;
   }

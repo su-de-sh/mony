@@ -48,7 +48,7 @@ export default function Mony() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const amountInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: transactionForCurrentMonth } = useQuery({
+  const { data: transactionForCurrentMonth, refetch } = useQuery({
     queryKey: ["transactionForCurrentMonth", currentMonth],
     queryFn: () =>
       fetch(`/api/transactions?currentMonth=${currentMonth}`, {
@@ -293,7 +293,12 @@ export default function Mony() {
                 </button>
               </div>
 
-              <TransactionForm darkMode={darkMode} categories={CATEGORIES} />
+              <TransactionForm
+                darkMode={darkMode}
+                categories={CATEGORIES}
+                setIsAddingTransaction={setIsAddingTransaction}
+                refetch={refetch}
+              />
             </motion.div>
           </motion.div>
         )}
