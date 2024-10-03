@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, color } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   Search,
-  ChevronLeft,
-  ChevronRight,
   Plus,
   X,
   ShoppingBag,
@@ -21,7 +19,6 @@ import {
   Plane,
   Gift,
   Smartphone,
-  Coffee,
   Book,
   Moon,
   Sun,
@@ -32,7 +29,7 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { signOut } from "next-auth/react";
 import TransactionForm from "@/components/organism/transaction/TransactionForm";
-import prisma from "@/lib/db";
+import IncomeExpenseWidget from "@/sections/dashboard/IncomeExpensesWidget";
 
 type Transaction = {
   id: number;
@@ -105,22 +102,31 @@ const MonyLogo = () => (
 
 export default function Mony() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
 
-  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [darkMode, setDarkMode] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const amountInputRef = useRef<HTMLInputElement>(null);
 
+  const filteredTransactions = transactions.filter(
+    (t) =>
+      new Date(t?.date)?.getMonth() === currentMonth?.getMonth() &&
+      new Date(t?.date)?.getFullYear() === currentMonth?.getFullYear()
+  );
+
+  const changeMonth = (increment: number) => {
+    setCurrentMonth((prevMonth) => {
+      const newMonth = new Date(prevMonth);
+      newMonth.setMonth(newMonth.getMonth() + increment);
+      return newMonth;
+    });
+  };
+
   useEffect(() => {
     setTransactions([]);
   }, []);
-
-  useEffect(() => {
-    if (isAddingTransaction && amountInputRef.current) {
-      amountInputRef.current.focus();
-    }
-  }, [isAddingTransaction]);
 
   useEffect(() => {
     const storedTransactions = localStorage.getItem("transactions");
@@ -135,32 +141,10 @@ export default function Mony() {
     }
   }, [isAddingTransaction]);
 
-  const filteredTransactions = transactions.filter(
-    (t) =>
-      new Date(t?.date)?.getMonth() === currentMonth?.getMonth() &&
-      new Date(t?.date)?.getFullYear() === currentMonth?.getFullYear()
-  );
-
-  const totalIncome = filteredTransactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = filteredTransactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const balance = totalIncome - totalExpenses;
-
   const getCategoryTotal = (categoryName: string) => {
     return filteredTransactions
       .filter((t) => t.category === categoryName && t.type === "expense")
       .reduce((sum, t) => sum + t.amount, 0);
-  };
-
-  const changeMonth = (increment: number) => {
-    setCurrentMonth((prevMonth) => {
-      const newMonth = new Date(prevMonth);
-      newMonth.setMonth(newMonth.getMonth() + increment);
-      return newMonth;
-    });
   };
 
   const chartData = categories
@@ -218,87 +202,22 @@ export default function Mony() {
             />
           </div>
         </header>
-
-        <div
-          className={`${
-            darkMode ? "bg-gray-800" : "bg-white"
-          } rounded-3xl shadow-lg p-6 mb-8`}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <button
-              onClick={() => changeMonth(-1)}
-              className={`${
-                darkMode
-                  ? "text-orange-400 hover:bg-gray-700"
-                  : "text-orange-600 hover:bg-orange-100"
-              } p-2 rounded-full transition-colors`}
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <h2
-              className={`text-2xl font-semibold ${
-                darkMode ? "text-orange-400" : "text-orange-600"
-              }`}
-            >
-              {currentMonth.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
-            </h2>
-            <button
-              onClick={() => changeMonth(1)}
-              className={`${
-                darkMode
-                  ? "text-orange-400 hover:bg-gray-700"
-                  : "text-orange-600 hover:bg-orange-100"
-              } p-2 rounded-full transition-colors`}
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-          <p
-            className={`text-5xl font-bold ${
-              darkMode ? "text-white" : "text-gray-800"
-            } mb-4`}
-          >
-            ${balance.toFixed(2)}
-          </p>
-          <div className="flex justify-between">
-            <div>
-              <p
-                className={`text-sm ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Income
-              </p>
-              <p className="text-lg font-semibold text-green-500">
-                ${totalIncome.toFixed(2)}
-              </p>
-            </div>
-            <div>
-              <p
-                className={`text-sm ${
-                  darkMode ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Expenses
-              </p>
-              <p className="text-lg font-semibold text-red-500">
-                ${totalExpenses.toFixed(2)}
-              </p>
-            </div>
-          </div>
-        </div>
+        <section>
+          <IncomeExpenseWidget
+            darkMode={darkMode}
+            currentMonth={currentMonth}
+            changeMonth={changeMonth}
+          />
+        </section>
 
         {showAnalytics && (
           <div
             className={`${
               darkMode ? "bg-gray-800" : "bg-white"
-            } rounded-3xl shadow-lg p-6 mb-8`}
+            } rounded-xl shadow-lg p-6 mb-8`}
           >
             <h2
-              className={`text-2xl font-semibold ${
+              className={`text-xl font-semibold ${
                 darkMode ? "text-orange-400" : "text-orange-600"
               } mb-4`}
             >
@@ -358,10 +277,10 @@ export default function Mony() {
         <div
           className={`${
             darkMode ? "bg-gray-800" : "bg-white"
-          } rounded-3xl shadow-lg p-6 mb-8`}
+          } rounded-xl shadow-lg p-4 mb-8`}
         >
           <h2
-            className={`text-2xl font-semibold ${
+            className={`text-lg font-semibold ${
               darkMode ? "text-orange-400" : "text-orange-600"
             } mb-4`}
           >
@@ -474,11 +393,11 @@ export default function Mony() {
               exit={{ opacity: 0, scale: 0.9 }}
               className={`${
                 darkMode ? "bg-gray-800" : "bg-white"
-              } p-6 rounded-3xl w-full max-w-md`}
+              } p-6 rounded-xl w-full max-w-md`}
             >
               <div className="flex justify-between items-center mb-4">
                 <h3
-                  className={`text-2xl font-bold ${
+                  className={`text-xl font-bold ${
                     darkMode ? "text-orange-400" : "text-orange-600"
                   }`}
                 >
