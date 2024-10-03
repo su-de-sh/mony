@@ -32,22 +32,43 @@ function SubmitButton() {
   );
 }
 
-const TransactionForm = ({ darkMode, categories }) => {
+const TransactionForm = ({
+  darkMode,
+  categories,
+  setIsAddingTransaction,
+  refetch,
+}) => {
   const [state, formAction] = useFormState(addTransaction, initialState);
   const [transactionType, setTransactionType] = useState("expense");
-
-  const formRef = useRef<HTMLFormElement>();
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (state.message === "success") {
-      formRef.current.reset();
+      setIsAddingTransaction(false);
+      formRef.current?.reset();
+      refetch();
     }
-  }, [state.message]);
+  }, [state.message, setIsAddingTransaction, refetch]);
+
+  const handleTypeChange = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    type: string
+  ) => {
+    e.preventDefault();
+    setTransactionType(type);
+  };
+
+  const handleSubmit = (e) => {
+    if (!e.nativeEvent.submitter) {
+      e.preventDefault();
+    }
+  };
 
   return (
-    <form action={formAction} ref={formRef}>
+    <form action={formAction} onSubmit={handleSubmit} ref={formRef}>
       <div className="flex justify-around mb-4">
         <button
+          type="button"
           className={`px-6 py-2 rounded-full transition-colors ${
             transactionType === "expense"
               ? "bg-red-500 text-white"
@@ -55,11 +76,12 @@ const TransactionForm = ({ darkMode, categories }) => {
               ? "bg-gray-700 text-gray-300"
               : "bg-gray-200 text-gray-800"
           }`}
-          onClick={() => setTransactionType("expense")}
+          onClick={(e) => handleTypeChange(e, "expense")}
         >
           Expense
         </button>
         <button
+          type="button"
           className={`px-6 py-2 rounded-full transition-colors ${
             transactionType === "income"
               ? "bg-green-500 text-white"
@@ -67,7 +89,7 @@ const TransactionForm = ({ darkMode, categories }) => {
               ? "bg-gray-700 text-gray-300"
               : "bg-gray-200 text-gray-800"
           }`}
-          onClick={() => setTransactionType("income")}
+          onClick={(e) => handleTypeChange(e, "income")}
         >
           Income
         </button>
@@ -89,19 +111,32 @@ const TransactionForm = ({ darkMode, categories }) => {
           className={`mb-4 ${
             darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
           }`}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
         >
           <SelectValue placeholder="Select Category" />
         </SelectTrigger>
-        <SelectContent>
-          {categories.map((cat) => (
-            <SelectItem key={cat.name} value={cat.name}>
-              {cat.name}
-            </SelectItem>
-          ))}
+        <SelectContent
+          ref={(ref) => {
+            if (!ref) return;
+            ref.ontouchstart = (e) => {
+              e.preventDefault();
+            };
+          }}
+        >
+          {categories
+            ?.filter((cat) => cat.type.toLowerCase() === transactionType)
+            .map((cat) => (
+              <SelectItem key={cat.name} value={cat.name}>
+                {cat.name}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
       <SubmitButton />
-
       {state.error && (
         <Alert variant="destructive" className="mt-4">
           <AlertDescription>{state.error}</AlertDescription>

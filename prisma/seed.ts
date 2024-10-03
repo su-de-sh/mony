@@ -1,52 +1,39 @@
-import prisma from "../src/lib/db";
+import { PrismaClient, CategoryType } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 async function main() {
-  // Delete existing income categories
-  await prisma.incomeCategories.deleteMany({});
+  // Delete existing categories
+  await prisma.category.deleteMany({});
 
-  // Delete existing expense categories
-  await prisma.expenseCategories.deleteMany({});
-
-  // Seed income categories
-  const incomeCategories = [
-    { name: "Salary" },
-    { name: "Business" },
-    { name: "Investments" },
-    { name: "Freelancing" },
-    { name: "Rent" },
-    { name: "Other" },
+  // Seed categories
+  const categories = [
+    { name: "Salary", type: CategoryType.INCOME },
+    { name: "Business", type: CategoryType.INCOME },
+    { name: "Investments", type: CategoryType.INCOME },
+    { name: "Freelancing", type: CategoryType.INCOME },
+    { name: "Rent Income", type: CategoryType.INCOME },
+    { name: "Other Income", type: CategoryType.INCOME },
+    { name: "Groceries", type: CategoryType.EXPENSE },
+    { name: "Rent Expense", type: CategoryType.EXPENSE },
+    { name: "Utilities", type: CategoryType.EXPENSE },
+    { name: "Entertainment", type: CategoryType.EXPENSE },
+    { name: "Transportation", type: CategoryType.EXPENSE },
+    { name: "Healthcare", type: CategoryType.EXPENSE },
+    { name: "Insurance", type: CategoryType.EXPENSE },
+    { name: "Education", type: CategoryType.EXPENSE },
+    { name: "Other Expense", type: CategoryType.EXPENSE },
+    { name: "Clothing", type: CategoryType.EXPENSE },
+    { name: "Travel", type: CategoryType.EXPENSE },
+    { name: "Gifts", type: CategoryType.EXPENSE },
+    { name: "Gadgets", type: CategoryType.EXPENSE },
+    { name: "Food", type: CategoryType.EXPENSE },
+    { name: "Pet", type: CategoryType.EXPENSE },
+    { name: "Fitness", type: CategoryType.EXPENSE },
   ];
 
-  // Seed expense categories
-  const expenseCategories = [
-    { name: "Groceries" },
-    { name: "Rent" },
-    { name: "Utilities" },
-    { name: "Entertainment" },
-    { name: "Transportation" },
-    { name: "Healthcare" },
-    { name: "Insurance" },
-    { name: "Education" },
-    { name: "Other" },
-    { name: "Clothing" },
-    { name: "Travel" },
-    { name: "Gifts" },
-    { name: "Gadgets" },
-    { name: "Food" },
-    { name: "Pet" },
-    { name: "Fitness" },
-  ];
-
-  // Insert income categories
-  for (const category of incomeCategories) {
-    await prisma.incomeCategories.create({
-      data: category,
-    });
-  }
-
-  // Insert expense categories
-  for (const category of expenseCategories) {
-    await prisma.expenseCategories.create({
+  for (const category of categories) {
+    await prisma.category.create({
       data: category,
     });
   }

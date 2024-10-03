@@ -4,6 +4,7 @@ import "./globals.css";
 import SessionProviders from "@/providers/SessionProviders";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { TanStackProvider } from "@/providers/TanstackProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,7 +35,9 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
 
-        <SessionProviders>{children}</SessionProviders>
+        <SessionProviders>
+          <TanStackProvider>{children}</TanStackProvider>
+        </SessionProviders>
       </body>
     </html>
   );
