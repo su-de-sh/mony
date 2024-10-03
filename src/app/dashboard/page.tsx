@@ -7,79 +7,18 @@ import {
   Search,
   Plus,
   X,
-  ShoppingBag,
-  Briefcase,
-  PiggyBank,
-  Utensils,
-  Home,
-  Car,
-  Film,
-  Heart,
-  Dumbbell,
-  Plane,
-  Gift,
-  Smartphone,
-  Book,
   Moon,
   Sun,
   BarChart2,
   LogOut,
-  Dog,
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { signOut } from "next-auth/react";
 import TransactionForm from "@/components/organism/transaction/TransactionForm";
 import IncomeExpenseWidget from "@/sections/dashboard/IncomeExpensesWidget";
-
-type Transaction = {
-  id: number;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  date: Date;
-};
-
-const categories = [
-  { name: "Salary", icon: Briefcase, color: "#54A0FF" },
-  { name: "Investments", icon: PiggyBank, color: "#5CAB7D" },
-  {
-    name: "Business",
-    icon: Briefcase,
-    color: "#FF9F43",
-  },
-  { name: "Freelancing", icon: Briefcase, color: "#FF9F43" },
-  { name: "Rent", icon: Home, color: "#5ED4F3" },
-
-  { name: "Utilities", icon: Home, color: "#5ED4F3" },
-  { name: "Groceries", icon: ShoppingBag, color: "#FF9F43" },
-  { name: "Food", icon: Utensils, color: "#FF6B6B" },
-  { name: "Transportation", icon: Car, color: "#5ED4F3" },
-  { name: "Entertainment", icon: Film, color: "#FF9FF3" },
-  { name: "Healthcare", icon: Heart, color: "#FD7272" },
-  { name: "Fitness", icon: Dumbbell, color: "#6C5CE7" },
-  { name: "Travel", icon: Plane, color: "#1DD1A1" },
-  { name: "Gifts", icon: Gift, color: "#FF6B6B" },
-  { name: "Gadgets", icon: Smartphone, color: "#54A0FF" },
-  { name: "Education", icon: Book, color: "#FF9FF3" },
-  { name: "Other", icon: Moon, color: "#FF9F43" },
-  { name: "Pet", icon: Dog, color: "#FD7272" },
-
-  {
-    name: "Clothing",
-    icon: ShoppingBag,
-    color: "#FF2F43",
-  },
-  {
-    name: "Rent",
-    icon: Home,
-    color: "#5ED4F3",
-  },
-  {
-    name: "Insurance",
-    icon: PiggyBank,
-    color: "#5CAB7D",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import RecentTransactionWidget from "@/sections/dashboard/RecentTransactionWIdget";
+import { CATEGORIES } from "@/constants/categories";
 
 const MonyLogo = () => (
   <svg
@@ -101,7 +40,6 @@ const MonyLogo = () => (
 );
 
 export default function Mony() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
@@ -110,11 +48,14 @@ export default function Mony() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const amountInputRef = useRef<HTMLInputElement>(null);
 
-  const filteredTransactions = transactions.filter(
-    (t) =>
-      new Date(t?.date)?.getMonth() === currentMonth?.getMonth() &&
-      new Date(t?.date)?.getFullYear() === currentMonth?.getFullYear()
-  );
+  const { data: transactionForCurrentMonth } = useQuery({
+    queryKey: ["transactionForCurrentMonth", currentMonth],
+    queryFn: () =>
+      fetch(`/api/transactions?currentMonth=${currentMonth}`, {
+        method: "GET",
+        credentials: "include",
+      }).then((res) => res.json()),
+  });
 
   const changeMonth = (increment: number) => {
     setCurrentMonth((prevMonth) => {
@@ -125,35 +66,25 @@ export default function Mony() {
   };
 
   useEffect(() => {
-    setTransactions([]);
-  }, []);
-
-  useEffect(() => {
-    const storedTransactions = localStorage.getItem("transactions");
-    if (storedTransactions) {
-      setTransactions(JSON.parse(storedTransactions));
-    }
-  }, []);
-
-  useEffect(() => {
     if (isAddingTransaction && amountInputRef.current) {
       amountInputRef.current.focus();
     }
   }, [isAddingTransaction]);
 
   const getCategoryTotal = (categoryName: string) => {
-    return filteredTransactions
-      .filter((t) => t.category === categoryName && t.type === "expense")
-      .reduce((sum, t) => sum + t.amount, 0);
+    return transactionForCurrentMonth
+      ?.filter(
+        (t) =>
+          t.category.name === categoryName && t.transactionType === "EXPENSE"
+      )
+      .reduce((sum, t) => sum + Number(t.amount), 0);
   };
 
-  const chartData = categories
-    .map((category) => ({
-      name: category.name,
-      value: getCategoryTotal(category.name),
-      color: category.color,
-    }))
-    .filter((item) => item.value > 0);
+  const chartData = CATEGORIES.map((category) => ({
+    name: category.name,
+    value: getCategoryTotal(category.name),
+    color: category.color,
+  })).filter((item) => item.value > 0);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -207,6 +138,7 @@ export default function Mony() {
             darkMode={darkMode}
             currentMonth={currentMonth}
             changeMonth={changeMonth}
+            transactionForCurrentMonth={transactionForCurrentMonth}
           />
         </section>
 
@@ -227,46 +159,54 @@ export default function Mony() {
               className="flex items-center justify-center"
               style={{ height: "300px" }}
             >
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+              {chartData.length > 0 && (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
             <div className="mt-6 grid grid-cols-2 gap-4">
-              {categories.map((category) => {
+              {CATEGORIES.map((category) => {
                 const total = getCategoryTotal(category.name);
                 if (total === 0) return null;
                 const Icon = category.icon;
                 return (
                   <div
                     key={category.name}
-                    className={`flex items-center justify-between ${
+                    className={`  flex items-center justify-between ${
                       darkMode ? "bg-gray-700" : "bg-gray-50"
-                    } p-3 rounded-xl`}
+                    } p-2 rounded-xl`}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-2">
                       <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center mr-3"
+                        className="w-10 h-10 rounded-full flex items-center justify-center "
                         style={{ backgroundColor: category.color }}
                       >
                         <Icon className="w-6 h-6 text-white" />
                       </div>
-                      <span className="font-medium">{category.name}</span>
+                      <div className="flex flex-col max-w-20 ">
+                        <span className="font-medium truncate">
+                          {category.name}
+                        </span>
+                        <span className="font-semibold text-xs">
+                          ${Number(total).toFixed(2)}
+                        </span>
+                      </div>
                     </div>
-                    <span className="font-semibold">${total.toFixed(2)}</span>
                   </div>
                 );
               })}
@@ -274,72 +214,10 @@ export default function Mony() {
           </div>
         )}
 
-        <div
-          className={`${
-            darkMode ? "bg-gray-800" : "bg-white"
-          } rounded-xl shadow-lg p-4 mb-8`}
-        >
-          <h2
-            className={`text-lg font-semibold ${
-              darkMode ? "text-orange-400" : "text-orange-600"
-            } mb-4`}
-          >
-            Recent Transactions
-          </h2>
-          <div className="space-y-4">
-            {filteredTransactions.slice(0, 5).map((transaction) => {
-              const categoryInfo = categories.find(
-                (cat) => cat.name === transaction.category
-              );
-              const Icon = categoryInfo ? categoryInfo.icon : ShoppingBag;
-              return (
-                <motion.div
-                  key={transaction.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex justify-between items-center p-4 ${
-                    darkMode ? "bg-gray-700" : "bg-gray-50"
-                  } rounded-xl`}
-                >
-                  <div className="flex items-center">
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center mr-4"
-                      style={{
-                        backgroundColor: categoryInfo
-                          ? categoryInfo.color
-                          : "#ccc",
-                      }}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-lg">
-                        {transaction.category}
-                      </p>
-                      <p
-                        className={`text-sm ${
-                          darkMode ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
-                        {new Date(transaction.date).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <p
-                    className={`font-bold text-lg ${
-                      transaction.type === "income"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {transaction.type === "income" ? "+" : "-"}$
-                    {transaction.amount.toFixed(2)}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+        <RecentTransactionWidget
+          darkMode={darkMode}
+          transactionForCurrentMonth={transactionForCurrentMonth}
+        />
       </div>
 
       <nav
@@ -415,7 +293,7 @@ export default function Mony() {
                 </button>
               </div>
 
-              <TransactionForm darkMode={darkMode} categories={categories} />
+              <TransactionForm darkMode={darkMode} categories={CATEGORIES} />
             </motion.div>
           </motion.div>
         )}

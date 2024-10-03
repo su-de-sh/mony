@@ -1,5 +1,4 @@
 "use server";
-
 import prisma from "@/lib/db";
 import { getServerSession } from "next-auth";
 
@@ -8,9 +7,11 @@ export const addTransaction = async (prevState, formData) => {
   const categoryName = formData.get("category");
   const type = formData.get("type");
 
+  console.log("Prisma instance:", prisma);
+  console.log("Prisma category:", prisma.category);
+
   try {
     const session = await getServerSession();
-
     if (!session) {
       return {
         message: "error",
@@ -31,63 +32,49 @@ export const addTransaction = async (prevState, formData) => {
       };
     }
 
-    if (type === "income") {
-      const category = await prisma.incomeCategories.findUnique({
-        where: {
-          name: categoryName,
-        },
-      });
+    console.log("User found:", user);
+    console.log("Looking for category:", categoryName);
 
-      await prisma.income.create({
-        data: {
-          amount: parseFloat(amount),
-          Category: {
-            connect: {
-              id: category.id,
-            },
-          },
-          date: new Date(),
+    const category = await prisma.category.findUnique({
+      where: {
+        name: categoryName,
+      },
+    });
 
-          User: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-      });
+    console.log("Category found:", category);
+
+    if (!category) {
+      return {
+        message: "error",
+        error: "Category not found.",
+      };
     }
 
-    if (type === "expense") {
-      const category = await prisma.expenseCategories.findUnique({
-        where: {
-          name: categoryName,
-        },
-      });
-
-      await prisma.expenses.create({
-        data: {
-          amount: parseFloat(amount),
-          Category: {
-            connect: {
-              id: category.id,
-            },
-          },
-          date: new Date(),
-
-          User: {
-            connect: {
-              id: user.id,
-            },
+    const newTransaction = await prisma.transaction.create({
+      data: {
+        amount: parseFloat(amount),
+        transactionType: type.toUpperCase(),
+        category: {
+          connect: {
+            id: category.id,
           },
         },
-      });
-    }
+        date: new Date(),
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
+    console.log("Transaction created:", newTransaction);
 
     return {
       message: "success",
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error in addTransaction:", error);
     return {
       message: "error",
       error: "Failed to add transaction. Please try again.",

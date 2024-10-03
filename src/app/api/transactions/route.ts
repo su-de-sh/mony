@@ -5,7 +5,7 @@ import { startOfMonth, endOfMonth } from "date-fns";
 // Adjust the path according to your file structure
 import prisma from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server"; // Use NextResponse to handle the response
-import { options } from "../../auth/[...nextauth]/options";
+import { options } from "./../auth/[...nextauth]/options";
 
 export async function GET(request: NextRequest) {
   const currentMonth = request.nextUrl.searchParams.get("currentMonth");
@@ -28,9 +28,9 @@ export async function GET(request: NextRequest) {
     const endDate = endOfMonth(new Date(currentMonth));
 
     // Fetch income records for the authenticated user for the current year and month
-    const expensesRecord = await prisma.expenses.findMany({
+    const incomeRecords = await prisma.transaction.findMany({
       where: {
-        user_id: userId, // Use the userId from the session
+        userId: userId, // Use the userId from the session
         date: {
           gte: startDate, // Start of the current month
           lte: endDate, // End of the current month
@@ -40,7 +40,8 @@ export async function GET(request: NextRequest) {
         id: true,
         amount: true,
         date: true,
-        Category: {
+        transactionType: true,
+        category: {
           select: {
             name: true,
           },
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Return the response as JSON
-    return NextResponse.json(expensesRecord, { status: 200 });
+    return NextResponse.json(incomeRecords, { status: 200 });
   } catch (error) {
     console.error("Error fetching income:", error);
     return NextResponse.json(

@@ -26,47 +26,37 @@ model Account {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?       @unique
   password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  Income        Income[]
-  Expenses      Expenses[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
-model IncomeCategories {
-  id     Int      @id @default(autoincrement())
-  name   String   @unique @db.VarChar(50)
-  Income Income[]
+enum CategoryType {
+  INCOME
+  EXPENSE
 }
 
-model ExpenseCategories {
-  id       Int        @id @default(autoincrement())
-  name     String     @unique @db.VarChar(50)
-  Expenses Expenses[]
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique @db.VarChar(50)
+  type         CategoryType  @default(EXPENSE)
+  transactions Transaction[]
 }
 
-model Income {
-  id          Int              @id @default(autoincrement())
-  user_id     String
-  amount      Decimal          @db.Decimal(10, 2)
-  category_id Int
-  date        DateTime         @db.Date
-  User        User             @relation(fields: [user_id], references: [id])
-  Category    IncomeCategories @relation(fields: [category_id], references: [id])
-}
-
-model Expenses {
-  id          Int               @id @default(autoincrement())
-  user_id     String
-  amount      Decimal           @db.Decimal(10, 2)
-  category_id Int
-  date        DateTime          @db.Date
-  User        User              @relation(fields: [user_id], references: [id])
-  Category    ExpenseCategories @relation(fields: [category_id], references: [id])
+model Transaction {
+  id              Int          @id @default(autoincrement())
+  userId          String
+  amount          Decimal      @db.Decimal(10, 2)
+  transactionType CategoryType @default(EXPENSE)
+  categoryId      Int
+  date            DateTime     @db.Date
+  user            User         @relation(fields: [userId], references: [id])
+  category        Category     @relation(fields: [categoryId], references: [id])
 }

@@ -1,33 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const IncomeExpenseWidget = ({
   darkMode = false,
   currentMonth,
   changeMonth,
+  transactionForCurrentMonth,
 }) => {
-  const { data: income } = useQuery({
-    queryKey: ["income", currentMonth],
-    queryFn: () =>
-      fetch(`/api/transactions/income?currentMonth=${currentMonth}`, {
-        method: "GET",
-        credentials: "include",
-      }).then((res) => res.json()),
-  });
-
-  const { data: expenses } = useQuery({
-    queryKey: ["expenses", currentMonth],
-    queryFn: () =>
-      fetch(`/api/transactions/expenses?currentMonth=${currentMonth}`, {
-        method: "GET",
-        credentials: "include",
-      }).then((res) => res.json()),
-  });
-
   const totalIncome =
-    income?.reduce((acc, item) => acc + Number(item.amount), 0) || 0;
+    transactionForCurrentMonth
+      ?.filter((item) => item.transactionType === "INCOME")
+      .reduce((acc, item) => acc + Number(item.amount), 0) || 0;
   const totalExpenses =
-    expenses?.reduce((acc, item) => acc + Number(item.amount), 0) || 0;
+    transactionForCurrentMonth
+      ?.filter((item) => item.transactionType === "EXPENSE")
+      .reduce((acc, item) => acc + Number(item.amount), 0) || 0;
 
   const balance = totalIncome - totalExpenses;
 
