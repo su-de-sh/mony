@@ -1,8 +1,7 @@
-import React from "react";
 import AnalyticsButton from "./AnalyticsButton";
 import AddTransactionButton from "./AddTransactionButton";
-import LogoutButton from "./LogOutButton";
 import AddTransactionWidget from "./AddTransactionWidget";
+import HomeButton from "./HomeButton";
 
 const NavBar = () => {
   const darkMode = false;
@@ -13,11 +12,10 @@ const NavBar = () => {
       } shadow-lg rounded-t-3xl`}
     >
       <div className="flex justify-around items-center p-4">
-        <AnalyticsButton />
-
+        <HomeButton />
         <AddTransactionButton />
 
-        <LogoutButton />
+        <AnalyticsButton />
       </div>
       <AddTransactionWidget />
     </nav>

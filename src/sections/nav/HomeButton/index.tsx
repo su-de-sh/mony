@@ -1,23 +1,20 @@
 "use client";
 
-import { BarChart2 } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
-const AnalyticsButton = () => {
+const HomeButton = () => {
   const darkMode = false;
+
   const searchParams = useSearchParams();
 
   const currentParams = new URLSearchParams(searchParams);
   const currentMonth = currentParams.get("currentMonth");
 
   return (
-    <Link
-      href={`/dashboard/analytics?currentMonth=${new Date(
-        currentMonth
-      ).toISOString()}`}
-    >
+    <Link href={`/dashboard?currentMonth=${currentMonth}`}>
       <button
         className={`p-2 rounded-full ${
           darkMode
@@ -25,10 +22,10 @@ const AnalyticsButton = () => {
             : "text-orange-600 hover:bg-orange-100"
         } transition-colors`}
       >
-        <BarChart2 className="w-6 h-6" />
+        <Home className="text-orange-500" />
       </button>
     </Link>
   );
 };
 
-export default AnalyticsButton;
+export default HomeButton;
