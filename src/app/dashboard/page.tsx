@@ -1,10 +1,9 @@
-"use client";
 import Dashboard from "@/sections/dashboard";
 import React, { Suspense } from "react";
 
 const DashboardPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <Dashboard />
     </Suspense>
   );

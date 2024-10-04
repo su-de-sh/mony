@@ -3,9 +3,9 @@
 import { Home } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
-const HomeButton = () => {
+const HomeButtonContent = () => {
   const darkMode = false;
 
   const searchParams = useSearchParams();
@@ -25,6 +25,14 @@ const HomeButton = () => {
         <Home className="text-orange-500" />
       </button>
     </Link>
+  );
+};
+
+export const HomeButton = () => {
+  return (
+    <Suspense>
+      <HomeButtonContent />
+    </Suspense>
   );
 };
 

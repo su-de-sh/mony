@@ -3,10 +3,10 @@ import TransactionForm from "@/components/organism/transaction/TransactionForm";
 import { CATEGORIES } from "@/constants/categories";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const AddTransactionWidget = () => {
+const AddTransactionWidgetContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -79,6 +79,14 @@ const AddTransactionWidget = () => {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+};
+
+const AddTransactionWidget = () => {
+  return (
+    <Suspense>
+      <AddTransactionWidgetContent />
+    </Suspense>
   );
 };
 

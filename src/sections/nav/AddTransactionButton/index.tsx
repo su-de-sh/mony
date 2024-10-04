@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-const AddTransactionButton = () => {
+const AddTransactionButtonContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -28,6 +28,14 @@ const AddTransactionButton = () => {
     >
       <Plus className="w-8 h-8 text-white" />
     </motion.button>
+  );
+};
+
+const AddTransactionButton = () => {
+  return (
+    <Suspense>
+      <AddTransactionButtonContent />
+    </Suspense>
   );
 };
 

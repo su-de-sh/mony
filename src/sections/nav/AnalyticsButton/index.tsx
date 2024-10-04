@@ -3,9 +3,9 @@
 import { BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
-const AnalyticsButton = () => {
+const AnalyticsButtonContent = () => {
   const darkMode = false;
   const searchParams = useSearchParams();
 
@@ -28,6 +28,14 @@ const AnalyticsButton = () => {
         <BarChart2 className="w-6 h-6" />
       </button>
     </Link>
+  );
+};
+
+const AnalyticsButton = () => {
+  return (
+    <Suspense>
+      <AnalyticsButtonContent />
+    </Suspense>
   );
 };
 
