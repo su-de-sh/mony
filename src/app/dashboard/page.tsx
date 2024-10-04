@@ -1,3 +1,4 @@
+"use client";
 import Dashboard from "@/sections/dashboard";
 import React, { Suspense } from "react";
 
