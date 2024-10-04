@@ -1,12 +1,11 @@
 "use client";
-
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import IncomeExpenseWidget from "@/sections/dashboard/IncomeExpensesWidget";
 import { useQuery } from "@tanstack/react-query";
+import RecentTransactionWidget from "@/sections/dashboard/RecentTransactionWIdget";
 import { useRouter, useSearchParams } from "next/navigation";
-import RecentTransactionWidget from "./RecentTransactionWIdget";
 
-const DashboardContent = () => {
+const Dashboard = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -59,15 +58,6 @@ const DashboardContent = () => {
         transactionForCurrentMonth={transactionForCurrentMonth}
       />
     </>
-  );
-};
-
-// Dashboard Page Component wrapped with Suspense
-const Dashboard = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <DashboardContent />
-    </Suspense>
   );
 };
 
