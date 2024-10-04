@@ -7,9 +7,6 @@ export const addTransaction = async (prevState, formData) => {
   const categoryName = formData.get("category");
   const type = formData.get("type");
 
-  console.log("Prisma instance:", prisma);
-  console.log("Prisma category:", prisma.category);
-
   try {
     const session = await getServerSession();
     if (!session) {
@@ -32,16 +29,11 @@ export const addTransaction = async (prevState, formData) => {
       };
     }
 
-    console.log("User found:", user);
-    console.log("Looking for category:", categoryName);
-
     const category = await prisma.category.findUnique({
       where: {
         name: categoryName,
       },
     });
-
-    console.log("Category found:", category);
 
     if (!category) {
       return {
@@ -50,7 +42,7 @@ export const addTransaction = async (prevState, formData) => {
       };
     }
 
-    const newTransaction = await prisma.transaction.create({
+    await prisma.transaction.create({
       data: {
         amount: parseFloat(amount),
         transactionType: type.toUpperCase(),
@@ -67,8 +59,6 @@ export const addTransaction = async (prevState, formData) => {
         },
       },
     });
-
-    console.log("Transaction created:", newTransaction);
 
     return {
       message: "success",
