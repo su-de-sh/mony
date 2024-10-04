@@ -6,7 +6,6 @@ import PieChartWidget from "@/sections/analytics/PieChartWidget";
 const AnalyticsPage = async ({ searchParams }) => {
   const currentMonth = searchParams.currentMonth;
 
-  console.log("[page.tsx--[9]], currentMonth", currentMonth);
   const darkMode = false;
 
   const startDate = startOfMonth(new Date(currentMonth));
