@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { Suspense, useEffect, useState } from "react";
 import IncomeExpenseWidget from "@/sections/dashboard/IncomeExpensesWidget";
 import { useQuery } from "@tanstack/react-query";
-import RecentTransactionWidget from "@/sections/dashboard/RecentTransactionWIdget";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import RecentTransactionWidget from "./RecentTransactionWIdget";
 
-const Dashboard = () => {
+const DashboardContent = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Function to get 'currentMonth' from URL params or fallback to new Date()
   const getCurrentMonthFromParams = () => {
@@ -40,7 +42,7 @@ const Dashboard = () => {
     const currentParams = new URLSearchParams(searchParams);
     currentParams.set("currentMonth", currentMonth.toISOString());
     const newUrl = `?${currentParams}`;
-    window.history.replaceState({}, "", newUrl);
+    router.replace(newUrl);
   }, [currentMonth, searchParams]); // Run when 'currentMonth' or 'searchParams' change
 
   return (
@@ -57,6 +59,15 @@ const Dashboard = () => {
         transactionForCurrentMonth={transactionForCurrentMonth}
       />
     </>
+  );
+};
+
+// Dashboard Page Component wrapped with Suspense
+const Dashboard = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 };
 
