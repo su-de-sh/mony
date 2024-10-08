@@ -1,18 +1,11 @@
-"use client";
 import { Home } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 const HomeButton = () => {
   const darkMode = false;
 
-  const searchParams = useSearchParams();
-
-  const currentParams = new URLSearchParams(searchParams);
-  const currentMonth = currentParams.get("currentMonth");
-
   return (
-    <Link href={`/dashboard?currentMonth=${currentMonth}`}>
+    <Link href={`/dashboard`}>
       <button
         className={`p-2 rounded-full ${
           darkMode
