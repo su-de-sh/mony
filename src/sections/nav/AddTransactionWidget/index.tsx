@@ -3,34 +3,15 @@ import TransactionForm from "@/components/organism/transaction/TransactionForm";
 import { CATEGORIES } from "@/constants/categories";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import React, { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useAppContext } from "@/contexts";
 
-const AddTransactionWidgetContent = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+const AddTransactionWidget = () => {
+  const { isAddingTransaction, setIsAddingTransaction } = useAppContext();
 
-  // Initial state based on URL parameter
-  const [isAddingTransaction, setIsAddingTransaction] = useState(
-    searchParams.get("isAddingTransaction") === "true"
-  );
   const darkMode = false;
-
-  // Effect to sync state with URL changes
-  useEffect(() => {
-    if (searchParams.get("isAddingTransaction") === "true") {
-      setIsAddingTransaction(true);
-    } else {
-      setIsAddingTransaction(false);
-    }
-  }, [searchParams]);
 
   const handleClose = () => {
     setIsAddingTransaction(false);
-    const currentParams = new URLSearchParams(searchParams);
-    currentParams.delete("isAddingTransaction");
-    const newUrl = `?${currentParams.toString()}`;
-    router.replace(newUrl);
   };
 
   return (
@@ -79,14 +60,6 @@ const AddTransactionWidgetContent = () => {
         </motion.div>
       )}
     </AnimatePresence>
-  );
-};
-
-const AddTransactionWidget = () => {
-  return (
-    <Suspense>
-      <AddTransactionWidgetContent />
-    </Suspense>
   );
 };
 
