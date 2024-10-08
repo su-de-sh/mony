@@ -1,14 +1,33 @@
-"use client";
 import { CATEGORIES } from "@/constants/categories";
-import PieChartWidget from "@/sections/analytics/PieChartWidget";
-import { useAppContext } from "@/contexts";
-import { useTransaction } from "@/hooks/useTransaction";
+import prisma from "@/lib/db";
+import { endOfMonth, startOfMonth } from "date-fns";
+import PieChartWidget from "../PieChartWidget";
 
-const Analytics = () => {
-  const { currentMonth } = useAppContext();
-
-  const { data: transactionForCurrentMonth } = useTransaction(currentMonth);
+const AnalyticsServerComponent = async ({ currentMonth }) => {
   const darkMode = false;
+
+  const startDate = startOfMonth(new Date(currentMonth));
+  const endDate = endOfMonth(new Date(currentMonth));
+
+  const transactionForCurrentMonth = await prisma.transaction.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lt: endDate,
+      },
+    },
+    select: {
+      id: true,
+      amount: true,
+      date: true,
+      transactionType: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
 
   const getCategoryTotal = (categoryName) => {
     return (
@@ -80,4 +99,4 @@ const Analytics = () => {
   );
 };
 
-export default Analytics;
+export default AnalyticsServerComponent;

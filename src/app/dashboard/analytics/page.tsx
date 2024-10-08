@@ -1,8 +1,8 @@
 import Analytics from "@/sections/analytics";
 import React from "react";
 
-const AnalyticsPage = ({ searchParams }) => {
-  return <Analytics searchParams={searchParams} />;
+const AnalyticsPage = () => {
+  return <Analytics />;
 };
 
 export default AnalyticsPage;

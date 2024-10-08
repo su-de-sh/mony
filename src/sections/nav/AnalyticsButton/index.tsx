@@ -1,23 +1,10 @@
-"use client";
-
 import { BarChart2 } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import React, { Suspense } from "react";
 
-const AnalyticsButtonContent = () => {
+const AnalyticsButton = () => {
   const darkMode = false;
-  const searchParams = useSearchParams();
-
-  const currentParams = new URLSearchParams(searchParams);
-  const currentMonth = currentParams.get("currentMonth");
-
   return (
-    <Link
-      href={`/dashboard/analytics?currentMonth=${new Date(
-        currentMonth
-      ).toISOString()}`}
-    >
+    <Link href={`/dashboard/analytics`}>
       <button
         className={`p-2 rounded-full ${
           darkMode
@@ -28,14 +15,6 @@ const AnalyticsButtonContent = () => {
         <BarChart2 className="w-6 h-6" />
       </button>
     </Link>
-  );
-};
-
-const AnalyticsButton = () => {
-  return (
-    <Suspense>
-      <AnalyticsButtonContent />
-    </Suspense>
   );
 };
 
