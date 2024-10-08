@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const initialState = {
   message: null,
@@ -32,23 +33,28 @@ function SubmitButton() {
   );
 }
 
-const TransactionForm = ({
-  darkMode,
-  categories,
-  setIsAddingTransaction,
-  refetch,
-}) => {
+const TransactionForm = ({ darkMode, categories, setIsAddingTransaction }) => {
   const [state, formAction] = useFormState(addTransaction, initialState);
   const [transactionType, setTransactionType] = useState("expense");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (state.message === "success") {
       setIsAddingTransaction(false);
       formRef.current?.reset();
-      refetch();
+      queryClient.invalidateQueries({
+        queryKey: ["transactionForCurrentMonth"],
+      });
+
+      //make isAddingTransaction in URL false
+      const currentParams = new URLSearchParams(window.location.search);
+      currentParams.delete("isAddingTransaction");
+      const newUrl = `?${currentParams.toString()}`;
+      window.history.replaceState({}, "", newUrl);
     }
-  }, [state.message, setIsAddingTransaction, refetch]);
+  }, [state.message, setIsAddingTransaction]);
 
   const handleTypeChange = (
     e: React.MouseEvent<HTMLButtonElement>,

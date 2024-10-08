@@ -1,11 +1,22 @@
+"use client";
+import { useAppContext } from "@/contexts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const IncomeExpenseWidget = ({
   darkMode = false,
   currentMonth,
-  changeMonth,
   transactionForCurrentMonth,
 }) => {
+  const { setCurrentMonth } = useAppContext();
+
+  const changeMonth = (increment: number) => {
+    setCurrentMonth((prevMonth) => {
+      const newMonth = new Date(prevMonth);
+      newMonth.setMonth(newMonth.getMonth() + increment);
+      return newMonth;
+    });
+  };
+
   const totalIncome =
     transactionForCurrentMonth
       ?.filter((item) => item.transactionType === "INCOME")
