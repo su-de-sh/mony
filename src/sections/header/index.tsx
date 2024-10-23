@@ -1,5 +1,5 @@
-import { Menu, Moon, Search, Sun } from "lucide-react";
-import React from "react";
+import { Search } from "lucide-react";
+import SideNavBar from "../sidenav";
 
 const MonyLogo = () => (
   <svg
@@ -24,11 +24,8 @@ const Header = () => {
   const darkMode = false;
   return (
     <header className="flex justify-between items-center mb-8">
-      <Menu
-        className={`w-6 h-6 ${
-          darkMode ? "text-orange-400" : "text-orange-600"
-        }`}
-      />
+      <SideNavBar />
+
       <div className="flex items-center">
         <MonyLogo />
         <h1
@@ -40,16 +37,6 @@ const Header = () => {
         </h1>
       </div>
       <div className="flex items-center space-x-4">
-        <button
-          //   onClick={toggleDarkMode}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-        >
-          {darkMode ? (
-            <Sun className="w-6 h-6 text-yellow-400" />
-          ) : (
-            <Moon className="w-6 h-6 text-gray-600" />
-          )}
-        </button>
         <Search
           className={`w-6 h-6 ${
             darkMode ? "text-orange-400" : "text-orange-600"
