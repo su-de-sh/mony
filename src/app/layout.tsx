@@ -19,7 +19,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 export const metadata: Metadata = {
-  title: "Personal Finance Manager - Track Your Expenses & Budget",
+  title: "Mony - Personal Finance Manager - Track Your Expenses & Budget",
   description:
     "Easily manage your finances with our personal finance app. Track expenses, create budgets, monitor savings, and get insights to make smarter financial decisions.",
   keywords:
