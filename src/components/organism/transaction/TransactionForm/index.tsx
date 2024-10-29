@@ -47,12 +47,6 @@ const TransactionForm = ({ darkMode, categories, setIsAddingTransaction }) => {
       queryClient.invalidateQueries({
         queryKey: ["transactionForCurrentMonth"],
       });
-
-      //make isAddingTransaction in URL false
-      const currentParams = new URLSearchParams(window.location.search);
-      currentParams.delete("isAddingTransaction");
-      const newUrl = `?${currentParams.toString()}`;
-      window.history.replaceState({}, "", newUrl);
     }
   }, [state.message, setIsAddingTransaction]);
 
