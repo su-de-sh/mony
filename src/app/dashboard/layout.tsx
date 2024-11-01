@@ -1,5 +1,5 @@
-import Header from "@/sections/header";
-import NavBar from "@/sections/nav";
+import MobileHeader from "@/sections/header";
+import MobileNavBar from "@/sections/nav";
 
 export const metadata = {
   title: "Dashboard | Mony",
@@ -16,9 +16,9 @@ const DashboardLayout = ({ children }) => {
           : "bg-gradient-to-br from-orange-50 to-orange-100 text-gray-800"
       } transition-colors duration-300  p-6 pb-24`}
     >
-      <Header />
+      <MobileHeader />
       {children}
-      <NavBar />
+      <MobileNavBar />
     </div>
   );
 };

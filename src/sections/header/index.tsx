@@ -2,10 +2,10 @@ import { Search } from "lucide-react";
 import SideNavBar from "../sidenav";
 import { MonyLogo } from "@/components/atom/Logo";
 
-const Header = () => {
+const MobileHeader = () => {
   const darkMode = false;
   return (
-    <header className="flex justify-between items-center mb-8">
+    <header className="md:hidden flex justify-between items-center mb-8">
       <SideNavBar />
 
       <div className="flex items-center">
@@ -29,4 +29,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default MobileHeader;

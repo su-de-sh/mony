@@ -30,7 +30,7 @@ const IncomeExpenseWidget = ({
 
   return (
     <div
-      className={`${
+      className={`   ${
         darkMode ? "bg-gray-800" : "bg-white"
       } rounded-xl shadow-lg p-6 mb-8`}
     >

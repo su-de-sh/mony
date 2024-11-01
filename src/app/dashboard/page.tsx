@@ -1,10 +1,10 @@
-import Dashboard from "@/sections/dashboard";
+import MobileDashboard from "@/sections/dashboard";
 import React, { Suspense } from "react";
 
 const DashboardPage = () => {
   return (
     <Suspense>
-      <Dashboard />
+      <MobileDashboard />
     </Suspense>
   );
 };

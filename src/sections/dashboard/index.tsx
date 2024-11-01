@@ -4,13 +4,13 @@ import RecentTransactionWidget from "@/sections/dashboard/RecentTransactionWIdge
 import { useAppContext } from "@/contexts";
 import { useTransaction } from "@/hooks/useTransaction";
 
-const Dashboard = () => {
+const MobileDashboard = () => {
   const { currentMonth } = useAppContext();
 
   const { data: transactionForCurrentMonth } = useTransaction(currentMonth);
 
   return (
-    <>
+    <div className="md:hidden">
       <IncomeExpenseWidget
         darkMode={false}
         currentMonth={currentMonth}
@@ -21,8 +21,8 @@ const Dashboard = () => {
         darkMode={false}
         transactionForCurrentMonth={transactionForCurrentMonth}
       />
-    </>
+    </div>
   );
 };
 
-export default Dashboard;
+export default MobileDashboard;
