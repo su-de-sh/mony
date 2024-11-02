@@ -1,3 +1,5 @@
+import DashboardContentWrapper from "@/components/atom/DashboardContentWrapper";
+import DesktopSideNavbar from "@/sections/desktoSideNavbar";
 import MobileHeader from "@/sections/header";
 import MobileNavBar from "@/sections/nav";
 
@@ -11,13 +13,12 @@ const DashboardLayout = ({ children }) => {
   return (
     <div
       className={`min-h-screen ${
-        darkMode
-          ? "bg-gray-900 text-white"
-          : "bg-gradient-to-br from-orange-50 to-orange-100 text-gray-800"
-      } transition-colors duration-300  p-6 pb-24`}
+        darkMode ? "bg-gray-900 text-white" : "bg-[#FFF2E3] text-gray-800"
+      } transition-colors duration-300  p-6 pb-24 md:p-0 `}
     >
+      <DesktopSideNavbar />
       <MobileHeader />
-      {children}
+      <DashboardContentWrapper>{children}</DashboardContentWrapper>
       <MobileNavBar />
     </div>
   );
