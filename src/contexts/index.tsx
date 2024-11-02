@@ -12,6 +12,8 @@ type InitialContextType = {
   setIsAddingTransaction: Dispatch<SetStateAction<boolean>>;
   currentMonth: Date;
   setCurrentMonth: Dispatch<SetStateAction<Date>>;
+  isSideNavBarOpen: boolean;
+  setIsSideNavBarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const initialContext: InitialContextType = {
@@ -19,6 +21,8 @@ const initialContext: InitialContextType = {
   setIsAddingTransaction: () => {},
   currentMonth: new Date(),
   setCurrentMonth: () => {},
+  isSideNavBarOpen: true,
+  setIsSideNavBarOpen: () => {},
 };
 
 export const AppContext = createContext(initialContext);
@@ -26,6 +30,7 @@ export const AppContext = createContext(initialContext);
 export const AppProvider = ({ children }) => {
   const [isAddingTransaction, setIsAddingTransaction] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isSideNavBarOpen, setIsSideNavBarOpen] = useState(true);
 
   return (
     <AppContext.Provider
@@ -34,6 +39,8 @@ export const AppProvider = ({ children }) => {
         setIsAddingTransaction,
         currentMonth,
         setCurrentMonth,
+        isSideNavBarOpen,
+        setIsSideNavBarOpen,
       }}
     >
       {children}
