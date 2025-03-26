@@ -147,8 +147,14 @@ const TransactionForm = ({ darkMode, setIsAddingTransaction }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const amountInputRef = useRef<HTMLInputElement>(null);
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    // Auto-focus the amount input when the form appears
+    amountInputRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     if (state.message === "success") {
@@ -331,9 +337,16 @@ const TransactionForm = ({ darkMode, setIsAddingTransaction }) => {
             inputMode="decimal"
             value={amount}
             onChange={handleAmountChange}
-            placeholder="Enter amount"
+            placeholder="0.00"
             required
-            className={`pl-10 ${
+            ref={amountInputRef}
+            className={`pl-10 text-lg font-medium ${
+              amount
+                ? transactionType === "expense"
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-green-600 dark:text-green-400"
+                : ""
+            } ${
               darkMode
                 ? "bg-gray-700 text-white placeholder-gray-400"
                 : "bg-gray-100 text-gray-800 placeholder-gray-500"
