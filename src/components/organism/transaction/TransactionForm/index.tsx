@@ -137,7 +137,7 @@ const INCOME_CATEGORIES = [
   },
 ];
 
-const TransactionForm = ({ darkMode, setIsAddingTransaction }) => {
+const TransactionForm = ({ darkMode = false, setIsAddingTransaction }) => {
   const [state, formAction] = useFormState(addTransaction, initialState);
   const [transactionType, setTransactionType] = useState("expense");
   const [date, setDate] = useState(new Date());

@@ -18,7 +18,9 @@ const DashboardLayout = ({ children }) => {
     >
       <DesktopSideNavbar />
       <MobileHeader />
-      <DashboardContentWrapper>{children}</DashboardContentWrapper>
+      <div className="relative" style={{ zIndex: "0" }}>
+        <DashboardContentWrapper>{children}</DashboardContentWrapper>
+      </div>
       <MobileNavBar />
     </div>
   );
