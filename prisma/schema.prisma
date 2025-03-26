@@ -57,6 +57,7 @@ model Transaction {
   transactionType CategoryType @default(EXPENSE)
   categoryId      Int
   date            DateTime     @db.Date
+  remarks         String?      @db.VarChar(255)
   user            User         @relation(fields: [userId], references: [id])
   category        Category     @relation(fields: [categoryId], references: [id])
 }
