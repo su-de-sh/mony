@@ -14,6 +14,16 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 const initialState = {
   message: null,
@@ -36,6 +46,7 @@ function SubmitButton() {
 const TransactionForm = ({ darkMode, categories, setIsAddingTransaction }) => {
   const [state, formAction] = useFormState(addTransaction, initialState);
   const [transactionType, setTransactionType] = useState("expense");
+  const [date, setDate] = useState(new Date());
   const formRef = useRef<HTMLFormElement>(null);
 
   const queryClient = useQueryClient();
@@ -65,8 +76,13 @@ const TransactionForm = ({ darkMode, categories, setIsAddingTransaction }) => {
   };
 
   return (
-    <form action={formAction} onSubmit={handleSubmit} ref={formRef}>
-      <div className="flex justify-around mb-4">
+    <form
+      action={formAction}
+      onSubmit={handleSubmit}
+      ref={formRef}
+      className="space-y-4"
+    >
+      <div className="flex justify-around mb-6">
         <button
           type="button"
           className={`px-6 py-2 rounded-full transition-colors ${
@@ -95,47 +111,124 @@ const TransactionForm = ({ darkMode, categories, setIsAddingTransaction }) => {
         </button>
       </div>
       <input type="hidden" name="type" value={transactionType} />
-      <Input
-        name="amount"
-        type="number"
-        placeholder="Amount"
-        required
-        className={`mb-4 ${
-          darkMode
-            ? "bg-gray-700 text-white placeholder-gray-400"
-            : "bg-gray-100 text-gray-800 placeholder-gray-500"
-        }`}
-      />
-      <Select name="category" required>
-        <SelectTrigger
-          className={`mb-4 ${
-            darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
+
+      <div className="space-y-3">
+        <label
+          className={`block text-sm font-medium ${
+            darkMode ? "text-gray-300" : "text-gray-700"
           }`}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-            }
-          }}
         >
-          <SelectValue placeholder="Select Category" />
-        </SelectTrigger>
-        <SelectContent
-          ref={(ref) => {
-            if (!ref) return;
-            ref.ontouchstart = (e) => {
-              e.preventDefault();
-            };
-          }}
+          Amount
+        </label>
+        <Input
+          name="amount"
+          type="number"
+          placeholder="Enter amount"
+          required
+          className={`${
+            darkMode
+              ? "bg-gray-700 text-white placeholder-gray-400"
+              : "bg-gray-100 text-gray-800 placeholder-gray-500"
+          }`}
+        />
+      </div>
+
+      <div className="space-y-3">
+        <label
+          className={`block text-sm font-medium ${
+            darkMode ? "text-gray-300" : "text-gray-700"
+          }`}
         >
-          {categories
-            ?.filter((cat) => cat.type.toLowerCase() === transactionType)
-            .map((cat) => (
-              <SelectItem key={cat.name} value={cat.name}>
-                {cat.name}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+          Category
+        </label>
+        <Select name="category" required>
+          <SelectTrigger
+            className={`${
+              darkMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-800"
+            }`}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}
+          >
+            <SelectValue placeholder="Select Category" />
+          </SelectTrigger>
+          <SelectContent
+            ref={(ref) => {
+              if (!ref) return;
+              ref.ontouchstart = (e) => {
+                e.preventDefault();
+              };
+            }}
+          >
+            {categories
+              ?.filter((cat) => cat.type.toLowerCase() === transactionType)
+              .map((cat) => (
+                <SelectItem key={cat.name} value={cat.name}>
+                  {cat.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-3">
+        <label
+          className={`block text-sm font-medium ${
+            darkMode ? "text-gray-300" : "text-gray-700"
+          }`}
+        >
+          Date
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-full justify-start text-left font-normal",
+                !date && "text-muted-foreground",
+                darkMode
+                  ? "bg-gray-700 text-white"
+                  : "bg-gray-100 text-gray-800"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <CalendarComponent
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        <input type="hidden" name="date" value={date.toISOString()} />
+      </div>
+
+      <div className="space-y-3">
+        <label
+          className={`block text-sm font-medium ${
+            darkMode ? "text-gray-300" : "text-gray-700"
+          }`}
+        >
+          Remarks
+        </label>
+        <Textarea
+          name="remarks"
+          placeholder="Add notes about this transaction"
+          className={`${
+            darkMode
+              ? "bg-gray-700 text-white placeholder-gray-400"
+              : "bg-gray-100 text-gray-800 placeholder-gray-500"
+          }`}
+          rows={3}
+        />
+      </div>
+
       <SubmitButton />
       {state.error && (
         <Alert variant="destructive" className="mt-4">

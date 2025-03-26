@@ -6,6 +6,10 @@ export const addTransaction = async (prevState, formData) => {
   const amount = formData.get("amount");
   const categoryName = formData.get("category");
   const type = formData.get("type");
+  const remarks = formData.get("remarks");
+  const date = formData.get("date")
+    ? new Date(formData.get("date"))
+    : new Date();
 
   try {
     const session = await getServerSession();
@@ -51,7 +55,8 @@ export const addTransaction = async (prevState, formData) => {
             id: category.id,
           },
         },
-        date: new Date(),
+        date,
+        remarks,
         user: {
           connect: {
             id: user.id,
