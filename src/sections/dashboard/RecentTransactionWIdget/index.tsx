@@ -40,7 +40,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       <div
         className={`${
           darkMode ? "bg-gray-800" : "bg-white"
-        } rounded-xl shadow-lg p-4 mb-8 min-h-[200px]`}
+        } rounded-xl shadow-lg p-4 mb-0 min-h-[200px]`}
       >
         <div className="flex flex-col items-center justify-center h-full py-12">
           <div className="animate-spin h-8 w-8 border-4 border-orange-500 border-t-transparent rounded-full"></div>
@@ -55,7 +55,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       <div
         className={`${
           darkMode ? "bg-gray-800" : "bg-white"
-        } rounded-xl shadow-lg p-4 mb-8`}
+        } rounded-xl shadow-lg p-4 mb-0`}
       >
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <ShoppingBag
@@ -164,7 +164,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
     <div
       className={`${
         darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-xl shadow-lg p-4 mb-8`}
+      } rounded-xl shadow-lg p-4 mb-0 md:h-full md:mb-0 md:flex md:flex-col`}
     >
       <h2
         className={`text-lg font-semibold ${
@@ -173,6 +173,15 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       >
         <ShoppingBag className="h-5 w-5 mr-2" />
         Transactions
+        <Button
+          size="sm"
+          variant="ghost"
+          className="ml-auto text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          onClick={() => setIsAddingTransaction(true)}
+        >
+          <PlusCircle className="h-4 w-4 mr-1" />
+          <span className="hidden md:inline">Add</span>
+        </Button>
       </h2>
 
       {/* Search and filters */}
@@ -190,8 +199,8 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
           />
         </div>
 
-        {/* Filter buttons */}
-        <div className="flex justify-between items-center">
+        {/* Filter buttons - Update with responsive design */}
+        <div className="flex justify-between items-center md:flex-wrap md:gap-2">
           <div className="w-full overflow-x-auto pb-1">
             <div className="flex space-x-2">
               <Button
@@ -240,8 +249,8 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
           </div>
         </div>
 
-        {/* Date filter & Sort controls */}
-        <div className="flex flex-wrap gap-2 justify-between">
+        {/* Sort and date filter row - Add responsive design */}
+        <div className="flex space-x-2 md:flex-wrap md:space-y-2 md:space-x-0 md:gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -318,111 +327,113 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
         </div>
       )}
 
-      {/* Transactions List */}
-      <div className="space-y-4">
-        {Object.entries(
-          groupedByDate as Record<
-            string,
-            Array<{
-              id: string;
-              amount: number;
-              date: string;
-              transactionType: string;
-              category: { name: string };
-              remarks?: string;
-            }>
-          >
-        ).map(([date, transactions]) => (
-          <div key={date} className="space-y-2">
-            <h3
-              className={`text-sm font-medium sticky top-0 z-10 ${
-                darkMode
-                  ? "text-gray-300 bg-gray-800/95"
-                  : "text-gray-500 bg-white/95"
-              } backdrop-blur-sm py-1`}
+      {/* Transaction List */}
+      <div className="md:flex-grow md:overflow-auto md:max-h-[600px] pr-1">
+        <div className="space-y-4">
+          {Object.entries(
+            groupedByDate as Record<
+              string,
+              Array<{
+                id: string;
+                amount: number;
+                date: string;
+                transactionType: string;
+                category: { name: string };
+                remarks?: string;
+              }>
             >
-              <div className="flex items-center">
-                <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                {formatDateHeading(date)}
-              </div>
-            </h3>
+          ).map(([date, transactions]) => (
+            <div key={date} className="space-y-2">
+              <h3
+                className={`text-sm font-medium sticky top-0 z-10 ${
+                  darkMode
+                    ? "text-gray-300 bg-gray-800/95"
+                    : "text-gray-500 bg-white/95"
+                } backdrop-blur-sm py-1`}
+              >
+                <div className="flex items-center">
+                  <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                  {formatDateHeading(date)}
+                </div>
+              </h3>
 
-            {transactions.map((transaction) => {
-              const categoryInfo = CATEGORIES.find(
-                (cat) => cat.name === transaction.category.name
-              );
-              const Icon = categoryInfo ? categoryInfo.icon : ShoppingBag;
-              const isIncome = transaction.transactionType === "INCOME";
+              {transactions.map((transaction) => {
+                const categoryInfo = CATEGORIES.find(
+                  (cat) => cat.name === transaction.category.name
+                );
+                const Icon = categoryInfo ? categoryInfo.icon : ShoppingBag;
+                const isIncome = transaction.transactionType === "INCOME";
 
-              return (
-                <motion.div
-                  key={transaction.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex justify-between items-center p-3 ${
-                    darkMode
-                      ? "bg-gray-700 hover:bg-gray-650"
-                      : "bg-gray-50 hover:bg-gray-100"
-                  } rounded-lg border ${
-                    darkMode
-                      ? "border-gray-600"
-                      : isIncome
-                      ? "border-green-100"
-                      : "border-red-100"
-                  } transition-colors`}
-                >
-                  <div className="flex items-center">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center mr-3 shrink-0"
-                      style={{
-                        backgroundColor: categoryInfo
-                          ? categoryInfo.color
-                          : "#ccc",
-                      }}
-                    >
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p
-                        className={`font-medium ${
-                          darkMode ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {transaction.category.name}
-                      </p>
-                      {transaction.remarks && (
-                        <p
-                          className={`text-xs ${
-                            darkMode ? "text-gray-400" : "text-gray-500"
-                          } truncate max-w-[120px]`}
-                        >
-                          {transaction.remarks}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <p
-                    className={`font-bold ${
-                      isIncome ? "text-green-500" : "text-red-500"
-                    }`}
+                return (
+                  <motion.div
+                    key={transaction.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex justify-between items-center p-3 ${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-650"
+                        : "bg-gray-50 hover:bg-gray-100"
+                    } rounded-lg border ${
+                      darkMode
+                        ? "border-gray-600"
+                        : isIncome
+                        ? "border-green-100"
+                        : "border-red-100"
+                    } transition-colors`}
                   >
-                    {isIncome ? "+" : "-"}Rs.
-                    {Number(transaction.amount).toFixed(2)}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-
-      {filteredTransactions.length === 0 && (
-        <div className="text-center py-6">
-          <p className={`${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-            No matching transactions found
-          </p>
+                    <div className="flex items-center">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center mr-3 shrink-0"
+                        style={{
+                          backgroundColor: categoryInfo
+                            ? categoryInfo.color
+                            : "#ccc",
+                        }}
+                      >
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p
+                          className={`font-medium ${
+                            darkMode ? "text-white" : "text-gray-900"
+                          }`}
+                        >
+                          {transaction.category.name}
+                        </p>
+                        {transaction.remarks && (
+                          <p
+                            className={`text-xs ${
+                              darkMode ? "text-gray-400" : "text-gray-500"
+                            } truncate max-w-[120px]`}
+                          >
+                            {transaction.remarks}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <p
+                      className={`font-bold ${
+                        isIncome ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {isIncome ? "+" : "-"}Rs.
+                      {Number(transaction.amount).toFixed(2)}
+                    </p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ))}
         </div>
-      )}
+
+        {filteredTransactions.length === 0 && (
+          <div className="text-center py-6">
+            <p className={`${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+              No matching transactions found
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

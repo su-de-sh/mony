@@ -80,7 +80,7 @@ const IncomeExpenseWidget = ({
     <div
       className={`${
         darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-xl shadow-lg p-6 mb-8 transition-all duration-300 ${
+      } rounded-xl shadow-lg p-6 mb-0 md:mb-0 transition-all duration-300 ${
         isLoading ? "opacity-70" : "opacity-100"
       }`}
     >
@@ -97,7 +97,7 @@ const IncomeExpenseWidget = ({
           <ChevronLeft className="w-6 h-6" />
         </button>
         <h2
-          className={`text-xl font-semibold ${
+          className={`text-xl md:text-2xl font-semibold ${
             darkMode ? "text-orange-400" : "text-orange-600"
           }`}
         >
@@ -119,17 +119,17 @@ const IncomeExpenseWidget = ({
         </button>
       </div>
       {
-        <div>
+        <div className="md:flex md:flex-col md:items-center">
           <p
-            className={`font-bold text-4xl ${
+            className={`font-bold text-4xl md:text-5xl ${
               darkMode ? "text-white" : "text-gray-800"
-            } mb-4`}
+            } mb-4 md:mb-6`}
           >
             ${balance?.toFixed(2)}
           </p>
 
           {/* Progress bar for income vs expenses */}
-          <div className="w-full h-3 bg-gray-100 rounded-full mb-6 overflow-hidden flex">
+          <div className="w-full md:max-w-xl h-3 bg-gray-100 rounded-full mb-6 overflow-hidden flex">
             <div
               className="h-full bg-green-500 transition-all duration-500"
               style={{ width: `${incomePercentage}%` }}
@@ -139,7 +139,7 @@ const IncomeExpenseWidget = ({
               style={{ width: `${100 - incomePercentage}%` }}
             ></div>
           </div>
-          <div className="flex justify-between text-xs mb-4 px-1">
+          <div className="flex justify-between text-xs mb-4 px-1 w-full md:max-w-xl">
             <span className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
               Income: {incomePercentage}%
             </span>
@@ -148,7 +148,7 @@ const IncomeExpenseWidget = ({
             </span>
           </div>
 
-          <div className="flex justify-between mb-6">
+          <div className="flex justify-between mb-6 w-full md:max-w-xl">
             <div>
               <div className="flex items-center">
                 <p
