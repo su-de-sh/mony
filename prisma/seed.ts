@@ -1,18 +1,19 @@
-import { PrismaClient, CategoryType } from '@prisma/client';
+import { PrismaClient, CategoryType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Delete existing categories
-  await prisma.category.deleteMany({});
+  // Don't delete existing categories to avoid foreign key constraints
+  // Instead, only add new categories if they don't exist
 
-  // Seed categories
+  // Define all categories we want to ensure exist
   const categories = [
     { name: "Salary", type: CategoryType.INCOME },
     { name: "Business", type: CategoryType.INCOME },
     { name: "Investments", type: CategoryType.INCOME },
     { name: "Freelancing", type: CategoryType.INCOME },
     { name: "Rent Income", type: CategoryType.INCOME },
+    { name: "Loan Received", type: CategoryType.INCOME },
     { name: "Other Income", type: CategoryType.INCOME },
     { name: "Groceries", type: CategoryType.EXPENSE },
     { name: "Rent Expense", type: CategoryType.EXPENSE },
@@ -22,6 +23,7 @@ async function main() {
     { name: "Healthcare", type: CategoryType.EXPENSE },
     { name: "Insurance", type: CategoryType.EXPENSE },
     { name: "Education", type: CategoryType.EXPENSE },
+    { name: "Loan Given", type: CategoryType.EXPENSE },
     { name: "Other Expense", type: CategoryType.EXPENSE },
     { name: "Clothing", type: CategoryType.EXPENSE },
     { name: "Travel", type: CategoryType.EXPENSE },
@@ -32,13 +34,21 @@ async function main() {
     { name: "Fitness", type: CategoryType.EXPENSE },
   ];
 
+  // Add each category if it doesn't exist yet
   for (const category of categories) {
-    await prisma.category.create({
-      data: category,
+    const existingCategory = await prisma.category.findUnique({
+      where: { name: category.name },
     });
+
+    if (!existingCategory) {
+      await prisma.category.create({
+        data: category,
+      });
+      console.log(`Added new category: ${category.name}`);
+    }
   }
 
-  console.log("Seed data inserted successfully!");
+  console.log("Seed data updated successfully!");
 }
 
 main()
