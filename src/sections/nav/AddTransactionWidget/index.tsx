@@ -1,6 +1,6 @@
 "use client";
 import TransactionForm from "@/components/organism/transaction/TransactionForm";
-import { CATEGORIES } from "@/constants/categories";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useAppContext } from "@/contexts";
@@ -56,7 +56,6 @@ const AddTransactionWidget = () => {
 
             <TransactionForm
               darkMode={darkMode}
-              categories={CATEGORIES}
               setIsAddingTransaction={setIsAddingTransaction}
             />
           </motion.div>
