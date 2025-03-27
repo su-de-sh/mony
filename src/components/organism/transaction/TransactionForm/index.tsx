@@ -39,6 +39,9 @@ import {
   Store,
   Search,
   X,
+  Scissors,
+  Sparkles,
+  CalendarClock,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -63,6 +66,7 @@ const EXPENSE_CATEGORIES = [
       { name: "Groceries", icon: <ShoppingCart className="h-4 w-4 mr-2" /> },
       { name: "Rent Expense", icon: <Home className="h-4 w-4 mr-2" /> },
       { name: "Utilities", icon: <Smartphone className="h-4 w-4 mr-2" /> },
+      { name: "Home Improvement", icon: <Store className="h-4 w-4 mr-2" /> },
     ],
   },
   {
@@ -95,6 +99,17 @@ const EXPENSE_CATEGORIES = [
       { name: "Gadgets", icon: <Smartphone className="h-4 w-4 mr-2" /> },
       { name: "Pet", icon: <Gift className="h-4 w-4 mr-2" /> },
       { name: "Gifts", icon: <Gift className="h-4 w-4 mr-2" /> },
+      { name: "Cosmetic", icon: <Sparkles className="h-4 w-4 mr-2" /> },
+      { name: "Personal Care", icon: <Scissors className="h-4 w-4 mr-2" /> },
+    ],
+  },
+  {
+    group: "Services & Subscriptions",
+    items: [
+      {
+        name: "Subscription",
+        icon: <CalendarClock className="h-4 w-4 mr-2" />,
+      },
     ],
   },
   {

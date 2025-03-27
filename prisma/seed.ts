@@ -32,6 +32,10 @@ async function main() {
     { name: "Food", type: CategoryType.EXPENSE },
     { name: "Pet", type: CategoryType.EXPENSE },
     { name: "Fitness", type: CategoryType.EXPENSE },
+    { name: "Cosmetic", type: CategoryType.EXPENSE },
+    { name: "Personal Care", type: CategoryType.EXPENSE },
+    { name: "Home Improvement", type: CategoryType.EXPENSE },
+    { name: "Subscription", type: CategoryType.EXPENSE },
   ];
 
   // Add each category if it doesn't exist yet

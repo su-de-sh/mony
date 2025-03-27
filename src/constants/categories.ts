@@ -14,6 +14,10 @@ import {
   Book,
   Moon,
   Dog,
+  Scissors,
+  Sparkles,
+  Construction,
+  CalendarClock,
 } from "lucide-react";
 export const CATEGORIES = [
   { name: "Salary", icon: Briefcase, color: "#54A0FF", type: "INCOME" },
@@ -39,4 +43,18 @@ export const CATEGORIES = [
   { name: "Clothing", icon: ShoppingBag, color: "#FF2F43", type: "EXPENSE" },
   { name: "Rent", icon: Home, color: "#5ED4F3", type: "EXPENSE" }, // This Rent is for expense
   { name: "Insurance", icon: PiggyBank, color: "#5CAB7D", type: "EXPENSE" },
+  { name: "Cosmetic", icon: Sparkles, color: "#FF66C4", type: "EXPENSE" },
+  { name: "Personal Care", icon: Scissors, color: "#7158e2", type: "EXPENSE" },
+  {
+    name: "Home Improvement",
+    icon: Construction,
+    color: "#3b3b98",
+    type: "EXPENSE",
+  },
+  {
+    name: "Subscription",
+    icon: CalendarClock,
+    color: "#FF6B6B",
+    type: "EXPENSE",
+  },
 ];
