@@ -1,5 +1,7 @@
-import Header from "@/sections/header";
-import NavBar from "@/sections/nav";
+import DashboardContentWrapper from "@/components/atom/DashboardContentWrapper";
+import DesktopSideNavbar from "@/sections/desktoSideNavbar";
+import MobileHeader from "@/sections/header";
+import MobileNavBar from "@/sections/nav";
 
 export const metadata = {
   title: "Dashboard | Mony",
@@ -11,14 +13,15 @@ const DashboardLayout = ({ children }) => {
   return (
     <div
       className={`min-h-screen ${
-        darkMode
-          ? "bg-gray-900 text-white"
-          : "bg-gradient-to-br from-orange-50 to-orange-100 text-gray-800"
-      } transition-colors duration-300  p-6 pb-24`}
+        darkMode ? "bg-gray-900 text-white" : "bg-[#FFF2E3] text-gray-800"
+      } transition-colors duration-300  p-6 pb-24 md:p-0 `}
     >
-      <Header />
-      {children}
-      <NavBar />
+      <DesktopSideNavbar />
+      <MobileHeader />
+      <div className="relative" style={{ zIndex: "0" }}>
+        <DashboardContentWrapper>{children}</DashboardContentWrapper>
+      </div>
+      <MobileNavBar />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { TanStackProvider } from "@/providers/TanstackProvider";
 import { AppProvider } from "@/contexts";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +19,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 export const metadata: Metadata = {
-  title: "Personal Finance Manager - Track Your Expenses & Budget",
+  title: "Mony - Personal Finance Manager - Track Your Expenses & Budget",
   description:
     "Easily manage your finances with our personal finance app. Track expenses, create budgets, monitor savings, and get insights to make smarter financial decisions.",
   keywords:
@@ -44,6 +45,7 @@ export default function RootLayout({
       >
         <Analytics />
         <SpeedInsights />
+        <Toaster />
 
         <SessionProviders>
           <AppProvider>

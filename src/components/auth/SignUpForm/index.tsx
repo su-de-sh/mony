@@ -46,7 +46,7 @@ const SignUpForm = () => {
         required
       />
       {error && <p className=" text-xs text-destructive">{error}</p>}
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full bg-[#FF9F43]">
         Sign Up
       </Button>
     </form>
