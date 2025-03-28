@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
