@@ -199,113 +199,123 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
           />
         </div>
 
-        {/* Filter buttons - Update with responsive design */}
-        <div className="flex justify-between items-center md:flex-wrap md:gap-2">
-          <div className="w-full overflow-x-auto pb-1">
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className={`${
-                  activeFilter === "all"
-                    ? darkMode
-                      ? "bg-gray-700"
-                      : "bg-blue-50"
-                    : ""
-                } whitespace-nowrap`}
-                onClick={() => setActiveFilter("all")}
-              >
-                All
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className={`${
-                  activeFilter === "income"
-                    ? darkMode
-                      ? "bg-gray-700 text-green-400 border-green-600"
-                      : "bg-green-50 text-green-600 border-green-200"
-                    : ""
-                } whitespace-nowrap`}
-                onClick={() => setActiveFilter("income")}
-              >
-                Income
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className={`${
-                  activeFilter === "expense"
-                    ? darkMode
-                      ? "bg-gray-700 text-red-400 border-red-600"
-                      : "bg-red-50 text-red-600 border-red-200"
-                    : ""
-                } whitespace-nowrap`}
-                onClick={() => setActiveFilter("expense")}
-              >
-                Expense
-              </Button>
-            </div>
-          </div>
-        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`rounded-full ${
+              activeFilter === "all"
+                ? "bg-orange-100 text-orange-600"
+                : "text-gray-500 bg-gray-50"
+            } whitespace-nowrap`}
+            onClick={() => setActiveFilter("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`rounded-full ${
+              activeFilter === "income"
+                ? "bg-green-100 text-green-600"
+                : "text-gray-500 bg-gray-50"
+            } whitespace-nowrap`}
+            onClick={() => setActiveFilter("income")}
+          >
+            Income
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`rounded-full ${
+              activeFilter === "expense"
+                ? "bg-red-100 text-red-600"
+                : "text-gray-500 bg-gray-50"
+            } whitespace-nowrap`}
+            onClick={() => setActiveFilter("expense")}
+          >
+            Expenses
+          </Button>
 
-        {/* Sort and date filter row - Add responsive design */}
-        <div className="flex space-x-2 md:flex-wrap md:space-y-2 md:space-x-0 md:gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "flex items-center",
-                  selectedDate &&
-                    (darkMode
-                      ? "bg-gray-700 border-blue-600"
-                      : "bg-blue-50 border-blue-200")
+          <div className="ml-auto flex gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`${
+                    selectedDate
+                      ? "bg-orange-100 text-orange-600"
+                      : "text-gray-500 bg-gray-50"
+                  } rounded-full flex items-center`}
+                >
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {selectedDate ? (
+                    <span className="text-xs">
+                      {format(selectedDate, "MMM d")}
+                    </span>
+                  ) : (
+                    <span className="text-xs">Date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-0 w-auto" align="end">
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => setSelectedDate(date)}
+                  initialFocus
+                />
+                {selectedDate && (
+                  <div className="flex justify-end p-2 border-t">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedDate(null)}
+                      className="text-xs text-gray-500"
+                    >
+                      <X className="h-3 w-3 mr-1" />
+                      Clear
+                    </Button>
+                  </div>
                 )}
-                size="sm"
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                {selectedDate
-                  ? format(selectedDate, "MMM d, yyyy")
-                  : "Filter by date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+              </PopoverContent>
+            </Popover>
 
-          {selectedDate && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedDate(null)}
-              className="h-9"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Clear date
-            </Button>
-          )}
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[140px]">
-              <div className="flex items-center">
-                <ArrowDownUp className="h-4 w-4 mr-2" />
-                <span>Sort</span>
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="date-desc">Newest first</SelectItem>
-              <SelectItem value="date-asc">Oldest first</SelectItem>
-              <SelectItem value="amount-desc">Highest amount</SelectItem>
-              <SelectItem value="amount-asc">Lowest amount</SelectItem>
-            </SelectContent>
-          </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500 bg-gray-50 rounded-full flex items-center"
+                >
+                  <ArrowDownUp className="h-4 w-4 mr-1" />
+                  <span className="text-xs">Sort</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="p-2 w-48" align="end">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full text-xs">
+                    <span>
+                      {sortBy === "date-desc"
+                        ? "Newest first"
+                        : sortBy === "date-asc"
+                        ? "Oldest first"
+                        : sortBy === "amount-desc"
+                        ? "Highest amount"
+                        : "Lowest amount"}
+                    </span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date-desc">Newest first</SelectItem>
+                    <SelectItem value="date-asc">Oldest first</SelectItem>
+                    <SelectItem value="amount-desc">Highest amount</SelectItem>
+                    <SelectItem value="amount-asc">Lowest amount</SelectItem>
+                  </SelectContent>
+                </Select>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
       </div>
 
@@ -324,113 +334,141 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
               Showing transactions for {format(selectedDate, "MMMM d, yyyy")}
             </span>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSelectedDate(null)}
+            className="text-xs"
+          >
+            <X className="h-3 w-3 mr-1" />
+            Clear
+          </Button>
         </div>
       )}
 
       {/* Transaction List */}
-      <div className="md:flex-grow md:overflow-auto md:max-h-[600px] pr-1">
-        <div className="space-y-4">
-          {Object.entries(
-            groupedByDate as Record<
-              string,
-              Array<{
-                id: string;
-                amount: number;
-                date: string;
-                transactionType: string;
-                category: { name: string };
-                remarks?: string;
-              }>
-            >
-          ).map(([date, transactions]) => (
-            <div key={date} className="space-y-2">
-              <h3
-                className={`text-sm font-medium sticky top-0 z-10 ${
-                  darkMode
-                    ? "text-gray-300 bg-gray-800/95"
-                    : "text-gray-500 bg-white/95"
-                } backdrop-blur-sm py-1`}
-              >
-                <div className="flex items-center">
-                  <Calendar className="h-3.5 w-3.5 mr-1.5" />
+      <div className="flex-1 overflow-auto">
+        {Object.keys(groupedByDate).length > 0 ? (
+          <div className="space-y-6">
+            {Object.keys(groupedByDate).map((date) => (
+              <div key={date}>
+                <h3
+                  className={`text-sm font-medium text-gray-500 mb-2 sticky top-0 py-1 ${
+                    darkMode ? "bg-gray-800" : "bg-white"
+                  }`}
+                >
                   {formatDateHeading(date)}
-                </div>
-              </h3>
+                </h3>
+                <div className="space-y-2">
+                  {groupedByDate[date].map((transaction) => {
+                    // Find category details
+                    const category = CATEGORIES.find(
+                      (c) => c.name === transaction.category.name
+                    );
 
-              {transactions.map((transaction) => {
-                const categoryInfo = CATEGORIES.find(
-                  (cat) => cat.name === transaction.category.name
-                );
-                const Icon = categoryInfo ? categoryInfo.icon : ShoppingBag;
-                const isIncome = transaction.transactionType === "INCOME";
-
-                return (
-                  <motion.div
-                    key={transaction.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex justify-between items-center p-3 ${
-                      darkMode
-                        ? "bg-gray-700 hover:bg-gray-650"
-                        : "bg-gray-50 hover:bg-gray-100"
-                    } rounded-lg border ${
-                      darkMode
-                        ? "border-gray-600"
-                        : isIncome
-                        ? "border-green-100"
-                        : "border-red-100"
-                    } transition-colors`}
-                  >
-                    <div className="flex items-center">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center mr-3 shrink-0"
-                        style={{
-                          backgroundColor: categoryInfo
-                            ? categoryInfo.color
-                            : "#ccc",
-                        }}
+                    return (
+                      <motion.div
+                        key={transaction.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`p-3 rounded-lg ${
+                          darkMode ? "bg-gray-700" : "bg-gray-50"
+                        } flex items-center`}
                       >
-                        <Icon className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p
-                          className={`font-medium ${
-                            darkMode ? "text-white" : "text-gray-900"
-                          }`}
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center mr-3 flex-shrink-0"
+                          style={{
+                            backgroundColor:
+                              `${category?.color}20` || "#e5e7eb",
+                          }}
                         >
-                          {transaction.category.name}
-                        </p>
-                        {transaction.remarks && (
-                          <p
-                            className={`text-xs ${
-                              darkMode ? "text-gray-400" : "text-gray-500"
-                            } truncate max-w-[120px]`}
-                          >
-                            {transaction.remarks}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <p
-                      className={`font-bold ${
-                        isIncome ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {isIncome ? "+" : "-"}Rs.
-                      {Number(transaction.amount).toFixed(2)}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        {filteredTransactions.length === 0 && (
-          <div className="text-center py-6">
-            <p className={`${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-              No matching transactions found
+                          {category?.icon ? (
+                            <category.icon
+                              className="w-5 h-5"
+                              style={{ color: category.color || "#9ca3af" }}
+                            />
+                          ) : (
+                            <ShoppingBag
+                              className="w-5 h-5"
+                              style={{ color: "#9ca3af" }}
+                            />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center mb-1">
+                            <p
+                              className={`font-medium ${
+                                darkMode ? "text-gray-200" : "text-gray-800"
+                              } truncate`}
+                            >
+                              {transaction.category.name}
+                            </p>
+                            <p
+                              className={`font-medium ${
+                                transaction.transactionType === "INCOME"
+                                  ? "text-green-600"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              {transaction.transactionType === "INCOME"
+                                ? "+"
+                                : "-"}
+                              ${transaction.amount}
+                            </p>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            {transaction.note ? (
+                              <p className="text-xs text-gray-500 truncate max-w-[150px]">
+                                {transaction.note}
+                              </p>
+                            ) : (
+                              <div></div>
+                            )}
+                            <p className="text-xs text-gray-500">
+                              {format(new Date(transaction.date), "h:mm a")}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <ShoppingBag
+              className={`h-12 w-12 ${
+                darkMode ? "text-gray-600" : "text-gray-300"
+              } mb-4`}
+            />
+            <h3
+              className={`text-lg font-medium ${
+                darkMode ? "text-white" : "text-gray-900"
+              }`}
+            >
+              No results found
+            </h3>
+            <p
+              className={`${
+                darkMode ? "text-gray-400" : "text-gray-500"
+              } mt-1 max-w-xs mx-auto`}
+            >
+              Try adjusting your filters or search terms to find what you're
+              looking for
             </p>
+            <Button
+              className="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-700"
+              onClick={() => {
+                setSearchQuery("");
+                setActiveFilter("all");
+                setSelectedDate(null);
+              }}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Clear filters
+            </Button>
           </div>
         )}
       </div>

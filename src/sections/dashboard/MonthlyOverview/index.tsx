@@ -147,9 +147,9 @@ const MonthlyOverview = ({
     <div
       className={`${
         darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-xl shadow-lg p-6 mb-0 md:mb-0`}
+      } rounded-xl shadow-lg p-6 mb-0 md:mb-0 h-full flex flex-col overflow-auto`}
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h2
           className={`text-xl font-semibold ${
             darkMode ? "text-orange-400" : "text-orange-600"
@@ -181,7 +181,7 @@ const MonthlyOverview = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div
           className={`p-4 rounded-lg ${
             darkMode ? "bg-gray-700" : "bg-orange-50"
@@ -237,52 +237,135 @@ const MonthlyOverview = ({
         </div>
       </div>
 
-      <div className="h-64 mb-6">
+      <div className="flex-grow overflow-hidden relative min-h-[400px]">
         {chartType === "pie" ? (
           pieChartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => formatCurrency(value)} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="h-[400px] w-full max-w-full overflow-x-hidden">
+              <ResponsiveContainer width="95%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={80}
+                    outerRadius={120}
+                    paddingAngle={2}
+                    dataKey="value"
+                    animationBegin={0}
+                    animationDuration={1000}
+                    animationEasing="ease-out"
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                        stroke="white"
+                        strokeWidth={2}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "0.5rem",
+                      padding: "0.75rem",
+                      boxShadow:
+                        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                    }}
+                    labelStyle={{
+                      color: "#374151",
+                      fontWeight: 600,
+                      fontSize: "0.875rem",
+                    }}
+                    itemStyle={{
+                      color: "#6B7280",
+                      fontSize: "0.875rem",
+                    }}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    height={36}
+                    wrapperStyle={{
+                      paddingTop: "1rem",
+                      fontSize: "0.875rem",
+                      width: "90%",
+                      margin: "0 auto",
+                    }}
+                    formatter={(value) => (
+                      <span className="text-sm text-gray-600">{value}</span>
+                    )}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="h-full flex items-center justify-center">
-              <p className="text-gray-500">No expense data available</p>
+            <div className="h-[400px] flex items-center justify-center text-gray-500">
+              No expense data available
             </div>
           )
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barChartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip formatter={(value) => formatCurrency(value)} />
-              <Legend />
-              <Bar dataKey="income" fill="#54A0FF" name="Income" />
-              <Bar dataKey="expenses" fill="#FF6B6B" name="Expenses" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="h-[400px] w-full max-w-full overflow-x-hidden">
+            <ResponsiveContainer width="95%" height="100%">
+              <BarChart data={barChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: "#6B7280", fontSize: 12 }}
+                />
+                <YAxis
+                  tick={{ fill: "#6B7280", fontSize: 12 }}
+                  tickFormatter={(value) => formatCurrency(value)}
+                />
+                <Tooltip
+                  formatter={(value) => formatCurrency(value)}
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "0.5rem",
+                    padding: "0.75rem",
+                    boxShadow:
+                      "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+                  }}
+                  labelStyle={{
+                    color: "#374151",
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                  }}
+                  itemStyle={{
+                    color: "#6B7280",
+                    fontSize: "0.875rem",
+                  }}
+                />
+                <Legend
+                  formatter={(value) => (
+                    <span className="text-sm text-gray-600">{value}</span>
+                  )}
+                  wrapperStyle={{
+                    width: "90%",
+                    margin: "0 auto",
+                  }}
+                />
+                <Bar
+                  dataKey="income"
+                  fill="#54A0FF"
+                  name="Income"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar
+                  dataKey="expenses"
+                  fill="#FF6B6B"
+                  name="Expenses"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         )}
       </div>
 
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t border-gray-200 pt-4 mt-4">
         <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
           <TrendingUp className="w-5 h-5 mr-2 text-orange-500" />
           Top Spending Categories

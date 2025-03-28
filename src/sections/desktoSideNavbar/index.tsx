@@ -43,14 +43,15 @@ const DesktopSideNavbar = () => {
 
   return (
     <div
-      className={`hidden md:block absolute min-h-screen bg-[#FFF2E3] text-white shadow-lg transition-all duration-300 ${
+      className={`hidden md:block fixed min-h-screen bg-[#FFF2E3] text-white shadow-lg transition-all duration-300 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
+      style={{ zIndex: 50 }}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-1/2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-orange-400 text-white"
+        className="absolute -right-3 top-1/2 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-orange-400 text-white"
       >
         {isCollapsed ? (
           <ChevronRight className="h-4 w-4" />
