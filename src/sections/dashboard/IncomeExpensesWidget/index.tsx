@@ -1,6 +1,6 @@
 "use client";
 import { useAppContext } from "@/contexts";
-import { ChevronLeft, ChevronRight, PlusCircle, BarChart } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import usePreviousMonthData from "@/hooks/usePreviousMonthData";
 
@@ -55,10 +55,7 @@ const IncomeExpenseWidget = ({
     prevMonthTransactions
       ?.filter((item) => item.transactionType === "INCOME")
       .reduce((acc, item) => acc + Number(item.amount), 0) || 0;
-  console.log(
-    "[index.tsx--[58]], prevMonthTransactions",
-    prevMonthTransactions
-  );
+
   const prevMonthExpenses =
     prevMonthTransactions
       ?.filter((item) => item.transactionType === "EXPENSE")
@@ -74,168 +71,139 @@ const IncomeExpenseWidget = ({
       ? ((totalExpenses - prevMonthExpenses) / prevMonthExpenses) * 100
       : 0;
 
-  console.log("[index.tsx--[75]], incomeChange", prevMonthIncome, incomeChange);
-
   return (
     <div
       className={`${
         darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-xl shadow-lg p-6 mb-0 md:mb-0 transition-all duration-300 ${
+      } rounded-xl shadow-sm border border-gray-100 p-6 transition-all duration-300 ${
         isLoading ? "opacity-70" : "opacity-100"
       }`}
     >
       <div className="flex justify-between items-center mb-6">
-        <button
-          onClick={() => changeMonth(-1)}
-          className={`${
-            darkMode
-              ? "text-orange-400 hover:bg-gray-700"
-              : "text-orange-600 hover:bg-orange-100"
-          } p-2 rounded-full transition-colors`}
-          disabled={isLoading}
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <h2
-          className={`text-xl md:text-2xl font-semibold ${
-            darkMode ? "text-orange-400" : "text-orange-600"
-          }`}
-        >
-          {currentMonth.toLocaleString("default", {
-            month: "long",
-            year: "numeric",
-          })}
-        </h2>
-        <button
-          onClick={() => changeMonth(1)}
-          className={`${
-            darkMode
-              ? "text-orange-400 hover:bg-gray-700"
-              : "text-orange-600 hover:bg-orange-100"
-          } p-2 rounded-full transition-colors`}
-          disabled={isLoading}
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
-      </div>
-      {
-        <div className="md:flex md:flex-col md:items-center">
-          <p
-            className={`font-bold text-4xl md:text-5xl ${
-              darkMode ? "text-white" : "text-gray-800"
-            } mb-4 md:mb-6`}
-          >
-            ${balance?.toFixed(2)}
-          </p>
-
-          {/* Progress bar for income vs expenses */}
-          <div className="w-full md:max-w-xl h-3 bg-gray-100 rounded-full mb-6 overflow-hidden flex">
-            <div
-              className="h-full bg-green-500 transition-all duration-500"
-              style={{ width: `${incomePercentage}%` }}
-            ></div>
-            <div
-              className="h-full bg-red-500 transition-all duration-500"
-              style={{ width: `${100 - incomePercentage}%` }}
-            ></div>
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-orange-500" />
           </div>
-          <div className="flex justify-between text-xs mb-4 px-1 w-full md:max-w-xl">
-            <span className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Income: {incomePercentage}%
-            </span>
-            <span className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-              Expenses: {100 - incomePercentage}%
-            </span>
-          </div>
-
-          <div className="flex justify-between mb-6 w-full md:max-w-xl">
-            <div>
-              <div className="flex items-center">
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  } mr-2`}
-                >
-                  Income
-                </p>
-                {prevMonthIncome > 0 &&
-                  incomeChange !== 0 &&
-                  !isPrevMonthLoading && (
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        incomeChange >= 0
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {incomeChange >= 0 ? "+" : ""}
-                      {incomeChange.toFixed(1)}%
-                    </span>
-                  )}
-                {isPrevMonthLoading && (
-                  <span className="ml-2 w-12 h-5 bg-gray-200 animate-pulse rounded-full"></span>
-                )}
-              </div>
-              <p className="text-lg font-semibold text-green-500">
-                ${totalIncome?.toFixed(2)}
-              </p>
-            </div>
-            <div>
-              <div className="flex items-center">
-                <p
-                  className={`text-sm ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  } mr-2`}
-                >
-                  Expenses
-                </p>
-                {prevMonthExpenses > 0 &&
-                  expensesChange !== 0 &&
-                  !isPrevMonthLoading && (
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        expensesChange <= 0
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {expensesChange >= 0 ? "+" : ""}
-                      {expensesChange.toFixed(1)}%
-                    </span>
-                  )}
-                {isPrevMonthLoading && (
-                  <span className="ml-2 w-12 h-5 bg-gray-200 animate-pulse rounded-full"></span>
-                )}
-              </div>
-              <p className="text-lg font-semibold text-red-500">
-                ${totalExpenses?.toFixed(2)}
-              </p>
-            </div>
-          </div>
-
-          {/* Quick actions */}
-          <div
-            className={`flex justify-between mt-4 pt-4 border-t ${
-              darkMode ? "border-gray-700" : "border-gray-200"
-            }`}
-          >
-            <button
-              className={`flex items-center text-sm font-medium ${
-                darkMode ? "text-orange-400" : "text-orange-600"
-              } transition-colors hover:opacity-80`}
-            >
-              <PlusCircle className="w-4 h-4 mr-1" /> Add Transaction
-            </button>
-            <button
-              className={`flex items-center text-sm font-medium ${
-                darkMode ? "text-orange-400" : "text-orange-600"
-              } transition-colors hover:opacity-80`}
-            >
-              <BarChart className="w-4 h-4 mr-1" /> View Report
-            </button>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">
+              Financial Overview
+            </h2>
+            <p className="text-sm text-gray-500">
+              Track your monthly performance
+            </p>
           </div>
         </div>
-      }
+        <div className="flex items-center bg-white rounded-lg shadow-sm p-1">
+          <button
+            onClick={() => changeMonth(-1)}
+            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            disabled={isLoading}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <h3 className="text-sm font-medium text-gray-700 mx-2">
+            {currentMonth.toLocaleString("default", {
+              month: "long",
+              year: "numeric",
+            })}
+          </h3>
+          <button
+            onClick={() => changeMonth(1)}
+            className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            disabled={isLoading}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="md:flex md:flex-col md:items-center">
+        <div className="text-center mb-6">
+          <p className="text-sm text-gray-500 mb-1">Current Balance</p>
+          <p className="font-bold text-4xl md:text-5xl text-gray-900">
+            ${balance?.toFixed(2)}
+          </p>
+        </div>
+
+        {/* Progress bar for income vs expenses */}
+        <div className="w-full md:max-w-xl h-2 bg-gray-100 rounded-full mb-4 overflow-hidden">
+          <div
+            className="h-full bg-green-500 transition-all duration-500"
+            style={{ width: `${incomePercentage}%` }}
+          ></div>
+          <div
+            className="h-full bg-red-500 transition-all duration-500"
+            style={{ width: `${100 - incomePercentage}%` }}
+          ></div>
+        </div>
+        <div className="flex justify-between text-sm mb-6 px-1 w-full md:max-w-xl">
+          <span className="text-gray-600">Income: {incomePercentage}%</span>
+          <span className="text-gray-600">
+            Expenses: {100 - incomePercentage}%
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 w-full md:max-w-xl">
+          <div className="bg-green-50 rounded-xl p-4">
+            <div className="mb-1">
+              <p className="text-sm text-gray-600">Income</p>
+            </div>
+            <p className="text-xl font-semibold text-green-600 mb-1">
+              ${totalIncome?.toFixed(2)}
+            </p>
+            {prevMonthIncome > 0 &&
+            incomeChange !== 0 &&
+            !isPrevMonthLoading ? (
+              <div className="mt-1">
+                <span
+                  className={`text-xs px-1.5 py-0.5 rounded-full inline-block ${
+                    incomeChange >= 0
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {incomeChange >= 0 ? "+" : ""}
+                  {incomeChange.toFixed(1)}
+                </span>
+                <span className="text-xs"> % from last month</span>
+              </div>
+            ) : isPrevMonthLoading ? (
+              <div className="mt-1">
+                <span className="w-24 h-4 bg-gray-200 animate-pulse rounded-full inline-block"></span>
+              </div>
+            ) : null}
+          </div>
+          <div className="bg-red-50 rounded-xl p-4">
+            <div className="mb-1">
+              <p className="text-sm text-gray-600">Expenses</p>
+            </div>
+            <p className="text-xl font-semibold text-red-600 mb-1">
+              ${totalExpenses?.toFixed(2)}
+            </p>
+            {prevMonthExpenses > 0 &&
+            expensesChange !== 0 &&
+            !isPrevMonthLoading ? (
+              <div className="mt-1">
+                <span
+                  className={`text-xs px-1.5 py-0.5 rounded-full inline-block ${
+                    expensesChange <= 0
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {expensesChange >= 0 ? "+" : ""}
+                  {expensesChange.toFixed(1)}
+                </span>
+                <span className="text-xs"> % from last month</span>
+              </div>
+            ) : isPrevMonthLoading ? (
+              <div className="mt-1">
+                <span className="w-24 h-4 bg-gray-200 animate-pulse rounded-full inline-block"></span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
