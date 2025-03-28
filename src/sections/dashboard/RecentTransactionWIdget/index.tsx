@@ -455,8 +455,8 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
                 darkMode ? "text-gray-400" : "text-gray-500"
               } mt-1 max-w-xs mx-auto`}
             >
-              Try adjusting your filters or search terms to find what you're
-              looking for
+              Try adjusting your filters or search terms to find what
+              you&apos;re looking for
             </p>
             <Button
               className="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-700"
