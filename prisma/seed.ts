@@ -36,7 +36,7 @@ async function main() {
     { name: "Personal Care", type: CategoryType.EXPENSE },
     { name: "Home Improvement", type: CategoryType.EXPENSE },
     { name: "Subscription", type: CategoryType.EXPENSE },
-    { name: "Investment", type: CategoryType.EXPENSE },
+    { name: "Collateral Load", type: CategoryType.EXPENSE },
     { name: "EMI", type: CategoryType.EXPENSE },
   ];
 
