@@ -36,6 +36,8 @@ async function main() {
     { name: "Personal Care", type: CategoryType.EXPENSE },
     { name: "Home Improvement", type: CategoryType.EXPENSE },
     { name: "Subscription", type: CategoryType.EXPENSE },
+    { name: "Collateral Load", type: CategoryType.EXPENSE },
+    { name: "EMI", type: CategoryType.EXPENSE },
   ];
 
   // Add each category if it doesn't exist yet
