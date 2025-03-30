@@ -114,7 +114,11 @@ const EXPENSE_CATEGORIES = [
   },
   {
     group: "Financial",
-    items: [{ name: "Loan Given", icon: <Users className="h-4 w-4 mr-2" /> }],
+    items: [
+      { name: "Loan Given", icon: <Users className="h-4 w-4 mr-2" /> },
+      { name: "EMI", icon: <Briefcase className="h-4 w-4 mr-2" /> },
+      { name: "Investment", icon: <DollarSign className="h-4 w-4 mr-2" /> },
+    ],
   },
   {
     group: "Other",
