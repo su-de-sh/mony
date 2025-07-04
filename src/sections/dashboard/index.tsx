@@ -56,6 +56,7 @@ export const DesktopDashboard = () => {
             <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
             <p className="text-sm text-gray-500 mt-1">Welcome back!</p>
           </div>
+          {/* Removed the redundant Add Transaction button since we now have the floating action button */}
         </div>
 
         <div className="grid grid-cols-12 gap-3 lg:gap-4 overflow-x-hidden">

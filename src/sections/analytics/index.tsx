@@ -44,11 +44,13 @@ const Analytics = () => {
     );
   };
 
-  const chartData = CATEGORIES.map((category) => ({
-    name: category.name,
-    value: getCategoryTotal(category.name),
-    color: category.color,
-  })).filter((item) => item.value > 0);
+  const chartData = CATEGORIES.filter((category) => category.type === "EXPENSE")
+    .map((category) => ({
+      name: category.name,
+      value: getCategoryTotal(category.name),
+      color: category.color,
+    }))
+    .filter((item) => item.value > 0);
 
   // Calculate total expenses and income
   const totalExpenses =

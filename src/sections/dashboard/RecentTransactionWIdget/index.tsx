@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/popover";
 
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import TransactionActions from "@/components/molecule/transaction/TransactionActions";
 
 const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
   const { setIsAddingTransaction } = useAppContext();
@@ -173,15 +174,6 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       >
         <ShoppingBag className="h-5 w-5 mr-2" />
         Transactions
-        <Button
-          size="sm"
-          variant="ghost"
-          className="ml-auto text-orange-500 hover:text-orange-600 hover:bg-orange-50"
-          onClick={() => setIsAddingTransaction(true)}
-        >
-          <PlusCircle className="h-4 w-4 mr-1" />
-          <span className="hidden md:inline">Add</span>
-        </Button>
       </h2>
 
       {/* Search and filters */}
@@ -347,7 +339,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       )}
 
       {/* Transaction List */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto relative">
         {Object.keys(groupedByDate).length > 0 ? (
           <div className="space-y-6">
             {Object.keys(groupedByDate).map((date) => (
@@ -403,23 +395,29 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
                             >
                               {transaction.category.name}
                             </p>
-                            <p
-                              className={`font-medium ${
-                                transaction.transactionType === "INCOME"
-                                  ? "text-green-600"
-                                  : "text-red-600"
-                              }`}
-                            >
-                              {transaction.transactionType === "INCOME"
-                                ? "+"
-                                : "-"}
-                              ${transaction.amount}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <p
+                                className={`font-medium ${
+                                  transaction.transactionType === "INCOME"
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }`}
+                              >
+                                {transaction.transactionType === "INCOME"
+                                  ? "+"
+                                  : "-"}
+                                ${transaction.amount}
+                              </p>
+                              <TransactionActions
+                                transaction={transaction}
+                                darkMode={darkMode}
+                              />
+                            </div>
                           </div>
                           <div className="flex justify-between items-center">
-                            {transaction.note ? (
+                            {transaction.remarks ? (
                               <p className="text-xs text-gray-500 truncate max-w-[150px]">
-                                {transaction.note}
+                                {transaction.remarks}
                               </p>
                             ) : (
                               <div></div>

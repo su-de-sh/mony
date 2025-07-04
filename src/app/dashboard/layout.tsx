@@ -2,6 +2,8 @@ import DashboardContentWrapper from "@/components/atom/DashboardContentWrapper";
 import DesktopSideNavbar from "@/sections/desktoSideNavbar";
 import MobileHeader from "@/sections/header";
 import MobileNavBar from "@/sections/nav";
+import AddTransactionWidget from "@/sections/nav/AddTransactionWidget";
+import { FloatingAddButton } from "@/components/ui/floating-add-button";
 
 export const metadata = {
   title: "Dashboard | Mony",
@@ -22,6 +24,8 @@ const DashboardLayout = ({ children }) => {
         <DashboardContentWrapper>{children}</DashboardContentWrapper>
       </div>
       <MobileNavBar />
+      <AddTransactionWidget />
+      <FloatingAddButton />
     </div>
   );
 };

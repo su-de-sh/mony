@@ -84,3 +84,138 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function PUT(request: NextRequest) {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "You must be logged in to access this resource" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const { id, amount, categoryName, transactionType, date, remarks } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Transaction ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    // Verify the transaction belongs to the user
+    const existingTransaction = await prisma.transaction.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: userId,
+      },
+    });
+
+    if (!existingTransaction) {
+      return NextResponse.json(
+        { error: "Transaction not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    // Find the category
+    const category = await prisma.category.findUnique({
+      where: { name: categoryName },
+    });
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 400 }
+      );
+    }
+
+    // Update the transaction
+    const updatedTransaction = await prisma.transaction.update({
+      where: { id: parseInt(id) },
+      data: {
+        amount: parseFloat(amount),
+        transactionType: transactionType.toUpperCase(),
+        categoryId: category.id,
+        date: new Date(date),
+        remarks: remarks || null,
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(updatedTransaction, { status: 200 });
+  } catch (error) {
+    console.error("Error updating transaction:", error);
+    return NextResponse.json(
+      { error: "An error occurred while updating the transaction" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await getServerSession(options);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "You must be logged in to access this resource" },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Transaction ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const userId = session.user.id;
+
+    // Verify the transaction belongs to the user
+    const existingTransaction = await prisma.transaction.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: userId,
+      },
+    });
+
+    if (!existingTransaction) {
+      return NextResponse.json(
+        { error: "Transaction not found or unauthorized" },
+        { status: 404 }
+      );
+    }
+
+    // Delete the transaction
+    await prisma.transaction.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return NextResponse.json(
+      { message: "Transaction deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    return NextResponse.json(
+      { error: "An error occurred while deleting the transaction" },
+      { status: 500 }
+    );
+  }
+}
