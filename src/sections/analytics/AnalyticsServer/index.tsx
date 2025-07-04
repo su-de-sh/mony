@@ -40,13 +40,11 @@ const AnalyticsServerComponent = async ({ currentMonth }) => {
     );
   };
 
-  const chartData = CATEGORIES.filter((category) => category.type === "EXPENSE")
-    .map((category) => ({
-      name: category.name,
-      value: getCategoryTotal(category.name),
-      color: category.color,
-    }))
-    .filter((item) => item.value > 0);
+  const chartData = CATEGORIES.map((category) => ({
+    name: category.name,
+    value: getCategoryTotal(category.name),
+    color: category.color,
+  })).filter((item) => item.value > 0);
 
   return (
     <div
@@ -68,38 +66,34 @@ const AnalyticsServerComponent = async ({ currentMonth }) => {
         {chartData.length > 0 && <PieChartWidget chartData={chartData} />}
       </div>
       <div className="mt-6 grid grid-cols-2 gap-4">
-        {CATEGORIES.filter((category) => category.type === "EXPENSE").map(
-          (category) => {
-            const total = getCategoryTotal(category.name);
-            if (total === 0) return null;
-            const Icon = category.icon;
-            return (
-              <div
-                key={category.name}
-                className={`flex items-center justify-between ${
-                  darkMode ? "bg-gray-700" : "bg-gray-50"
-                } p-2 rounded-xl`}
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: category.color }}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex flex-col max-w-20">
-                    <span className="font-medium truncate">
-                      {category.name}
-                    </span>
-                    <span className="font-semibold text-xs">
-                      ${Number(total).toFixed(2)}
-                    </span>
-                  </div>
+        {CATEGORIES.map((category) => {
+          const total = getCategoryTotal(category.name);
+          if (total === 0) return null;
+          const Icon = category.icon;
+          return (
+            <div
+              key={category.name}
+              className={`flex items-center justify-between ${
+                darkMode ? "bg-gray-700" : "bg-gray-50"
+              } p-2 rounded-xl`}
+            >
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: category.color }}
+                >
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex flex-col max-w-20">
+                  <span className="font-medium truncate">{category.name}</span>
+                  <span className="font-semibold text-xs">
+                    ${Number(total).toFixed(2)}
+                  </span>
                 </div>
               </div>
-            );
-          }
-        )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

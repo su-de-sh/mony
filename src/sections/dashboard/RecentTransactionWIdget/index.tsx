@@ -165,7 +165,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
     <div
       className={`${
         darkMode ? "bg-gray-800" : "bg-white"
-      } rounded-xl shadow-lg p-4 mb-0 md:h-full md:mb-0 md:flex md:flex-col`}
+      } rounded-xl shadow-lg p-4 mb-0 md:h-full md:mb-0 md:flex md:flex-col relative`}
     >
       <h2
         className={`text-lg font-semibold ${
@@ -339,7 +339,7 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
       )}
 
       {/* Transaction List */}
-      <div className="flex-1 overflow-auto relative">
+      <div className="flex-1 overflow-auto">
         {Object.keys(groupedByDate).length > 0 ? (
           <div className="space-y-6">
             {Object.keys(groupedByDate).map((date) => (
@@ -469,6 +469,17 @@ const RecentTransactionWidget = ({ darkMode, transactionForCurrentMonth }) => {
             </Button>
           </div>
         )}
+      </div>
+
+      {/* Sticky Add Transaction Button - Desktop Only */}
+      <div className="hidden md:block">
+        <Button
+          size="lg"
+          className="fixed bottom-6 right-6 bg-orange-500 hover:bg-orange-600 text-white rounded-full shadow-lg z-50 w-14 h-14 p-0"
+          onClick={() => setIsAddingTransaction(true)}
+        >
+          <PlusCircle className="h-6 w-6" />
+        </Button>
       </div>
     </div>
   );
